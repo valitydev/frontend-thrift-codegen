@@ -1,0 +1,25 @@
+{
+  "name": "@vality/thrift-codegen",
+  "version": "0.1.0",
+  "description": "",
+  "main": "./lib/codegen.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Vality",
+  "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "bin": {
+    "thrift-codegen": "bin/index.js"
+  },
+  "dependencies": {
+    "@vality/thrift-ts": "^2.2.1",
+    "yargs": "^17.3.1"
+  },
+  "devDependencies": {
+    "prettier": "^2.5.1"
+  }
+}
