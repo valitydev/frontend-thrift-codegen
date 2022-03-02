@@ -20,7 +20,7 @@ jobs:
             - name: Install Packages
               run: npm ci
             - name: Version Up
-              run: npm version prerelease --preid ${GITHUB_SHA::7}
+              run: npm version prerelease --preid ${GITHUB_SHA::7} --no-git-tag-version
             - name: Publish NPM
               run: npm publish
               env:
