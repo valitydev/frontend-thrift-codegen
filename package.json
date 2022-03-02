@@ -4,7 +4,7 @@
   "description": "",
   "main": "./lib/codegen.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "check": "prettier \"**/*.{html,js,ts,css,scss,md,json,prettierrc,svg,huskyrc,yml,yaml}\" --list-different"
   },
   "author": "Vality",
   "license": "Apache-2.0",
