@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@vality/thrift-ts": "^2.2.2-e258b9a.0",
+    "typescript": "^4.6.2",
     "yargs": "^17.3.1"
   },
   "devDependencies": {
