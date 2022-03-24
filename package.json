@@ -16,11 +16,11 @@
     "thrift-codegen": "bin/index.js"
   },
   "dependencies": {
-    "@vality/thrift-ts": "^2.2.2-e258b9a.0",
-    "typescript": "^4.6.2",
-    "yargs": "^17.3.1"
+    "@vality/thrift-ts": "2.2.2-1d124bb.0",
+    "typescript": "4.6.2",
+    "yargs": "17.3.1"
   },
   "devDependencies": {
-    "prettier": "^2.5.1"
+    "prettier": "2.5.1"
   }
 }
