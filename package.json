@@ -1,6 +1,6 @@
 {
   "name": "@vality/thrift-codegen",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "",
   "main": "./lib/codegen.js",
   "scripts": {
@@ -16,7 +16,7 @@
     "thrift-codegen": "bin/index.js"
   },
   "dependencies": {
-    "@vality/thrift-ts": "2.2.2-e8bc2ab.0",
+    "@vality/thrift-ts": "2.3.1-1629bfa.0",
     "typescript": "4.6.2",
     "yargs": "17.3.1"
   },
