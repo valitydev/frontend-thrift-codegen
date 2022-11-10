@@ -65,20 +65,18 @@ function isThriftFile(file) {
     return path.parse(file).ext === '.thrift';
 }
 
-async function codegenAll() {
+async function compileProto(resultDist) {
     const argv = yargs.command('gen').option('dist', {
         alias: 'd',
         type: 'string',
         description: 'Dist directory',
-        default: './lib',
+        default: resultDist,
     }).argv;
-    console.log('argv._', argv._);
     const PROJECT_PATH = process.cwd();
-    const PROTO_PATH = path.join(PROJECT_PATH, argv._[0]);
+    const PROTO_PATH = path.join(PROJECT_PATH, 'proto');
     const DEPS_PATHS = argv._.slice(1).map((d) => path.join(PROJECT_PATH, d));
     const DIST_PATH = path.join(PROJECT_PATH, argv.dist);
     const PROTOS_FILES = fs.readdirSync(PROTO_PATH).filter((proto) => isThriftFile(proto));
-
     const codegens = [];
     for (const protoPath of PROTOS_FILES.map((proto) => path.join(PROTO_PATH, proto))) {
         codegens.push(codegen(protoPath, DEPS_PATHS, DIST_PATH));
@@ -96,5 +94,4 @@ async function codegenAll() {
     );
 }
 
-module.exports = codegenAll;
-module.exports.default = codegenAll;
+module.exports = compileProto;

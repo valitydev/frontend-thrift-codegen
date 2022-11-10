@@ -1,1 +1,7 @@
 node_modules
+proto
+proto-compiled
+clients
+generated-clients
+lib
+dist

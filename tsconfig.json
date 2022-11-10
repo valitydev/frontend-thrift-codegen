@@ -1,0 +1,25 @@
+{
+    "compilerOptions": {
+        "target": "es2020",
+        "module": "esnext",
+        "strict": true,
+        "forceConsistentCasingInFileNames": true,
+        "noImplicitOverride": true,
+        "noPropertyAccessFromIndexSignature": true,
+        "noImplicitReturns": true,
+        "noImplicitAny": false,
+        "noFallthroughCasesInSwitch": true,
+        "noEmit": false,
+        "moduleResolution": "node",
+        "sourceMap": false,
+        "isolatedModules": true,
+        "resolveJsonModule": true,
+        "declaration": true,
+        "baseUrl": ".",
+        "outDir": "./dist"
+    },
+    "exclude":[
+        "./tools"
+    ],
+    "include": ["generated-clients/**/*"]
+}
