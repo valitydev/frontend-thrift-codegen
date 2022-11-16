@@ -13,6 +13,7 @@ const generateServiceTemplate = async (config, outputPath) => {
             dynamicReplacers: [
                 { slot: '__serviceName__', slotValue: serviceName },
                 { slot: '__namespace__', slotValue: namespace },
+                { slot: '__utilsPath__', slotValue: path.resolve(__dirname, 'utils') },
             ],
             output: {
                 path: `${outputPath}/__serviceName__.ts`,

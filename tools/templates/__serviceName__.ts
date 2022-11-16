@@ -1,6 +1,6 @@
 import { CodegenClient } from './internal/__namespace__-__serviceName__';
 
-import { getMethodsMetadata, codegenClientReducer, connect, ConnectOptions } from '../utils';
+import { getMethodsMetadata, codegenClientReducer, connect, ConnectOptions } from '__utilsPath__';
 
 const importMetadata = async () => {
     const metadata: any = await import('./internal/metadata.json');
