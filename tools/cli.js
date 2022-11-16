@@ -41,7 +41,7 @@ async function codegenClient() {
         {
             name: 'thrift-codegen',
             mode: 'production',
-            entry: './clients/index.ts',
+            entry: path.resolve('clients/index.ts'),
             devtool: false,
             module: {
                 rules: [
