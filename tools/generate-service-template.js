@@ -1,3 +1,5 @@
+const path = require('path');
+
 const { generateTemplateFilesBatch } = require('generate-template-files');
 
 const generateServiceTemplate = async (config, outputPath) => {
@@ -6,7 +8,7 @@ const generateServiceTemplate = async (config, outputPath) => {
             option: 'Create thrift client',
             defaultCase: '(noCase)',
             entry: {
-                folderPath: './tools/templates/__serviceName__.ts',
+                folderPath: path.resolve('tools/templates/__serviceName__.ts'),
             },
             dynamicReplacers: [
                 { slot: '__serviceName__', slotValue: serviceName },
@@ -22,7 +24,7 @@ const generateServiceTemplate = async (config, outputPath) => {
             option: 'Create index',
             defaultCase: '(noCase)',
             entry: {
-                folderPath: './tools/templates/index.ts',
+                folderPath: path.resolve('tools/templates/index.ts'),
             },
             dynamicReplacers: [{ slot: '__serviceName__', slotValue: 'TEST' }],
             output: {

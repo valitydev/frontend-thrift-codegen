@@ -5,9 +5,7 @@
   "scripts": {
     "check": "prettier \"**/*.{html,js,ts,css,scss,md,json,prettierrc,svg,huskyrc,yml,yaml}\" --list-different",
     "codegen": "bin/index.js",
-    "compile": "tsc -b ./tsconfig.json",
-    "build:clean": "shx rm -rf ./dist && shx rm -rf ./clients",
-    "build:package": "npm run build:clean && npm run codegen"
+    "compile": "tsc -b ./tsconfig.json"
   },
   "author": "Vality",
   "license": "Apache-2.0",
@@ -23,6 +21,7 @@
     "@vality/woody": "^0.1.1",
     "generate-template-files": "^3.2.1",
     "lodash-es": "^4.17.21",
+    "rimraf": "^3.0.2",
     "ts-loader": "^9.4.1",
     "typescript": "4.6.2",
     "webpack": "^5.74.0",
@@ -31,7 +30,6 @@
   },
   "devDependencies": {
     "@types/lodash-es": "^4.17.6",
-    "prettier": "2.5.1",
-    "shx": "^0.3.4"
+    "prettier": "2.5.1"
   }
 }

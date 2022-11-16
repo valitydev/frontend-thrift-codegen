@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const webpack = require('webpack');
+const rimraf = require('rimraf');
 
 const compileProto = require('./compile-proto');
 const generateServiceTemplate = require('./generate-service-template');
@@ -19,7 +20,18 @@ const prepareGenerateServiceConfig = (compiledDist) =>
             return { namespace, serviceName };
         });
 
+const rm = (path) =>
+    new Promise((resolve, reject) => {
+        rimraf(path, (err) => (err ? reject(err) : resolve()));
+    });
+
+const clean = async () => {
+    await rm(path.resolve('clients'));
+    await rm(path.resolve('dist'));
+};
+
 async function codegenClient() {
+    await clean();
     const outputPath = './clients';
     const outputProtoPath = `${outputPath}/internal`;
     await compileProto(outputProtoPath);
