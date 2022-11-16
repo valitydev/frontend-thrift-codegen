@@ -50,9 +50,10 @@ async function codegenClient() {
                         use: [
                             {
                                 loader: 'ts-loader',
-                                // options: {
-                                //     configFile: path.resolve(__dirname, 'tsconfig.json'),
-                                // },
+                                options: {
+                                    context: __dirname,
+                                    configFile: path.resolve(__dirname, 'tsconfig.json'),
+                                },
                             },
                         ],
                         exclude: /node_modules/,
