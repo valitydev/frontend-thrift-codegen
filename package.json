@@ -7,8 +7,8 @@
     "check": "prettier \"**/*.{html,js,ts,css,scss,md,json,prettierrc,svg,huskyrc,yml,yaml}\" --list-different",
     "codegen": "bin/index.js",
     "compile": "tsc -b ./tsconfig.json",
-    "build:clean": "shx rm -rf ./dist && shx rm -rf ./proto-compiled && shx rm -rf ./generated-clients",
-    "build:package": "npm run build:clean && npm run codegen && npm run compile"
+    "build:clean": "shx rm -rf ./dist && shx rm -rf ./clients",
+    "build:package": "npm run build:clean && npm run codegen"
   },
   "author": "Vality",
   "license": "Apache-2.0",

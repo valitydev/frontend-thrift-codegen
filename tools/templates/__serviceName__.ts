@@ -1,17 +1,17 @@
-import { CodegenClient } from '../proto-compiled/__namespace__-__serviceName__';
+import { CodegenClient } from './internal/__namespace__-__serviceName__';
 
 import { getMethodsMetadata, codegenClientReducer, connect, ConnectOptions } from '../utils';
 
 const importMetadata = async () => {
-    const metadata: any = await import('../proto-compiled/metadata.json');
+    const metadata: any = await import('./internal/metadata.json');
     return metadata.default;
 };
 
 const importService = async () =>
-    await import('../proto-compiled/__namespace__/gen-nodejs/__serviceName__');
+    await import('./internal/__namespace__/gen-nodejs/__serviceName__');
 
 const importContext = async () => {
-    const context = await import('../proto-compiled/__namespace__/context');
+    const context = await import('./internal/__namespace__/context');
     return context.default;
 };
 

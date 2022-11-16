@@ -1,6 +1,6 @@
 const { generateTemplateFilesBatch } = require('generate-template-files');
 
-const generateServiceTemplate = async (config) => {
+const generateServiceTemplate = async (config, outputPath) => {
     await generateTemplateFilesBatch([
         ...config.map(({ serviceName, namespace }) => ({
             option: 'Create thrift client',
@@ -13,7 +13,7 @@ const generateServiceTemplate = async (config) => {
                 { slot: '__namespace__', slotValue: namespace },
             ],
             output: {
-                path: './generated-clients/__serviceName__.ts',
+                path: `${outputPath}/__serviceName__.ts`,
                 pathAndFileNameDefaultCase: '(noCase)',
                 overwrite: true,
             },
@@ -26,7 +26,7 @@ const generateServiceTemplate = async (config) => {
             },
             dynamicReplacers: [{ slot: '__serviceName__', slotValue: 'TEST' }],
             output: {
-                path: './generated-clients/index.ts',
+                path: `${outputPath}/index.ts`,
                 pathAndFileNameDefaultCase: '(noCase)',
                 overwrite: true,
             },

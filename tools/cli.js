@@ -20,54 +20,55 @@ const prepareGenerateServiceConfig = (compiledDist) =>
         });
 
 async function codegenClient() {
-    const compiledDist = './proto-compiled';
-    await compileProto(compiledDist);
-    const serviceTemplateConfig = prepareGenerateServiceConfig(compiledDist);
-    await generateServiceTemplate(serviceTemplateConfig);
-    // webpack(
-    //     {
-    //         name: 'thrift-client',
-    //         mode: 'production',
-    //         entry: './generated-clients/index.ts',
-    //         devtool: false,
-    //         module: {
-    //             rules: [
-    //                 {
-    //                     test: /\.ts?$/,
-    //                     use: 'ts-loader',
-    //                     exclude: /node_modules/,
-    //                 },
-    //             ],
-    //         },
-    //         resolve: {
-    //             extensions: ['.ts', '.js'],
-    //             alias: {
-    //                 thrift: path.resolve('node_modules/@vality/woody/dist/thrift'),
-    //             },
-    //         },
-    //         output: {
-    //             filename: 'index.js',
-    //             path: path.resolve('lib'),
-    //             library: {
-    //                 name: 'thriftCodegen',
-    //                 type: 'umd',
-    //             },
-    //         },
-    //     },
-    //     (err, stats) => {
-    //         if (err) {
-    //             console.error(err);
-    //             return;
-    //         }
+    const outputPath = './clients';
+    const outputProtoPath = `${outputPath}/internal`;
+    await compileProto(outputProtoPath);
+    const serviceTemplateConfig = prepareGenerateServiceConfig(outputProtoPath);
+    await generateServiceTemplate(serviceTemplateConfig, outputPath);
+    webpack(
+        {
+            name: 'thrift-codegen',
+            mode: 'production',
+            entry: './clients/index.ts',
+            devtool: false,
+            module: {
+                rules: [
+                    {
+                        test: /\.ts?$/,
+                        use: 'ts-loader',
+                        exclude: /node_modules/,
+                    },
+                ],
+            },
+            resolve: {
+                extensions: ['.ts', '.js'],
+                alias: {
+                    thrift: path.resolve('node_modules/@vality/woody/dist/thrift'),
+                },
+            },
+            output: {
+                filename: '[name].bundle.js',
+                path: path.resolve('dist'),
+                library: {
+                    name: 'thriftCodegen',
+                    type: 'umd',
+                },
+            },
+        },
+        (err, stats) => {
+            if (err) {
+                console.error(err);
+                return;
+            }
 
-    //         console.log(
-    //             stats.toString({
-    //                 chunks: false, // Makes the build much quieter
-    //                 colors: true, // Shows colors in the console
-    //             })
-    //         );
-    //     }
-    // );
+            console.log(
+                stats.toString({
+                    chunks: false, // Makes the build much quieter
+                    colors: true, // Shows colors in the console
+                })
+            );
+        }
+    );
 }
 
 module.exports = codegenClient;
