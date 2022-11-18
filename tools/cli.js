@@ -56,7 +56,6 @@ async function codegenClient() {
                                 },
                             },
                         ],
-                        exclude: /node_modules/,
                     },
                 ],
             },
