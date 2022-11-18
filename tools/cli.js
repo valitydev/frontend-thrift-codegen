@@ -41,7 +41,7 @@ async function codegenClient() {
         {
             name: 'thrift-codegen',
             mode: 'production',
-            entry: path.resolve('clients/index.ts'),
+            entry: path.resolve('clients/Repository.ts'),
             devtool: false,
             module: {
                 rules: [
@@ -68,6 +68,7 @@ async function codegenClient() {
             output: {
                 filename: '[name].bundle.js',
                 path: path.resolve('dist'),
+                globalObject: 'this',
                 library: {
                     name: 'thriftCodegen',
                     type: 'umd',
