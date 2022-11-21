@@ -1,11 +1,13 @@
 import connectClient from '@vality/woody';
 import { DeadlineConfig, KeyValue } from '@vality/woody/src/connect-options';
+import { ThriftAstMetadata } from './types';
 
 export type Connection = any;
 export type ThriftService = any;
 
 export interface ConnectOptions {
     path: string;
+    metadata: ThriftAstMetadata[];
     headers?: KeyValue;
     deadlineConfig?: DeadlineConfig;
 }
