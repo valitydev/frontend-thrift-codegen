@@ -46,6 +46,9 @@ const copyTypes = async () =>
 const copyMetadata = async () =>
     fse.copy(path.resolve('clients/internal/metadata.json'), path.resolve('dist/metadata.json'));
 
+const copyTsUtils = async () =>
+    fse.copy(path.resolve(__dirname, 'utils'), path.resolve('clients/utils'));
+
 const build = async () =>
     new Promise((resolve, reject) => {
         webpack(
@@ -67,6 +70,7 @@ const build = async () =>
                                     },
                                 },
                             ],
+                            exclude: /node_modules/,
                         },
                     ],
                 },
@@ -110,7 +114,7 @@ async function codegenClient() {
     await compileProto(outputProtoPath);
     const serviceTemplateConfig = prepareGenerateServiceConfig(outputProtoPath);
     await generateServiceTemplate(serviceTemplateConfig, outputPath);
-    await fse.copy(path.resolve(__dirname, 'utils'), path.resolve('clients/utils'));
+    await copyTsUtils();
     await build();
     await copyMetadata();
     await copyTypes();

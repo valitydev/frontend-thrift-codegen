@@ -73,7 +73,7 @@ async function compileProto(resultDist) {
         default: resultDist,
     }).argv;
     const PROJECT_PATH = process.cwd();
-    const PROTO_PATH = path.join(PROJECT_PATH, 'proto');
+    const PROTO_PATH = path.join(PROJECT_PATH, argv._[0]);
     const DEPS_PATHS = argv._.slice(1).map((d) => path.join(PROJECT_PATH, d));
     const DIST_PATH = path.join(PROJECT_PATH, argv.dist);
     const PROTOS_FILES = fs.readdirSync(PROTO_PATH).filter((proto) => isThriftFile(proto));

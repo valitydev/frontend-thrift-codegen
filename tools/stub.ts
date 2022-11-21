@@ -1,1 +1,1 @@
-export const tsconfigIncludeStub = 10;
+export const tsconfigIncludeStub = '';
