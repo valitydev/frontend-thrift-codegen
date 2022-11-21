@@ -55,7 +55,7 @@ const build = async () =>
             {
                 name: 'thrift-codegen',
                 mode: 'production',
-                entry: path.resolve('clients/Repository.ts'),
+                entry: path.resolve('clients/index.ts'),
                 devtool: false,
                 module: {
                     rules: [
@@ -81,7 +81,7 @@ const build = async () =>
                     },
                 },
                 output: {
-                    filename: '[name].bundle.js',
+                    filename: 'thrift-codegen.bundle.js',
                     path: path.resolve('dist'),
                     globalObject: 'this',
                     library: {
