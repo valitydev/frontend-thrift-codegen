@@ -19,6 +19,7 @@
   "dependencies": {
     "@vality/thrift-ts": "2.4.1-8ad5123.0",
     "@vality/woody": "^0.1.1",
+    "copy-webpack-plugin": "^11.0.0",
     "generate-template-files": "^3.2.1",
     "lodash-es": "^4.17.21",
     "rimraf": "^3.0.2",

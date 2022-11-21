@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const webpack = require('webpack');
 const rimraf = require('rimraf');
+const CopyPlugin = require('copy-webpack-plugin');
 
 const compileProto = require('./compile-proto');
 const generateServiceTemplate = require('./generate-service-template');
@@ -21,9 +22,7 @@ const prepareGenerateServiceConfig = (compiledDist) =>
         });
 
 const rm = (path) =>
-    new Promise((resolve, reject) => {
-        rimraf(path, (err) => (err ? reject(err) : resolve()));
-    });
+    new Promise((resolve, reject) => rimraf(path, (err) => (err ? reject(err) : resolve())));
 
 const clean = async () => {
     await rm(path.resolve('clients'));
@@ -74,13 +73,22 @@ async function codegenClient() {
                     type: 'umd',
                 },
             },
+            plugins: [
+                new CopyPlugin({
+                    patterns: [
+                        {
+                            from: path.resolve('clients/internal/metadata.json'),
+                            to: path.resolve('dist'),
+                        },
+                    ],
+                }),
+            ],
         },
         (err, stats) => {
             if (err) {
                 console.error(err);
                 return;
             }
-
             console.log(
                 stats.toString({
                     chunks: false, // Makes the build much quieter
