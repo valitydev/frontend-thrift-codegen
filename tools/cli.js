@@ -74,8 +74,8 @@ const copyMetadata = async () =>
             path.resolve('dist/metadata.json')
         ),
         fse.copy(
-            path.resolve(__dirname, 'types/metadata.d.ts'),
-            path.resolve('dist/types/metadata.d.ts')
+            path.resolve(__dirname, 'types/metadata.json.d.ts'),
+            path.resolve('dist/types/metadata.json.d.ts')
         ),
     ]);
 
