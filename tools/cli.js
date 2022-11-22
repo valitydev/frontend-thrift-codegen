@@ -2,25 +2,49 @@ const fs = require('fs');
 const fse = require('fs-extra');
 const glob = require('glob');
 const path = require('path');
-const webpack = require('webpack');
 const rimraf = require('rimraf');
+const camelCase = require('lodash/camelCase');
+const yargs = require('yargs/yargs');
+const { hideBin } = require('yargs/helpers');
 
 const compileProto = require('./compile-proto');
 const generateServiceTemplate = require('./generate-service-template');
+const build = require('./build');
 
 /**
  * Dist with compiled proto contains files with name: '{namespace}-{serviceName}.ext'
  * Pair of namespace and serviceName requires for preparing codegen client.
  */
-const prepareGenerateServiceConfig = (compiledDist) =>
-    fs
+const prepareGenerateServiceConfig = (compiledDist, includedNamespaces) => {
+    const result = fs
         .readdirSync(compiledDist)
         .map((filePath) => path.parse(filePath))
         .filter(({ ext, name }) => ext === '.js' && name.includes('-'))
         .map(({ name }) => {
             const [namespace, serviceName] = name.split('-');
-            return { namespace, serviceName };
-        });
+            return {
+                namespace,
+                serviceName,
+            };
+        })
+        .reduce((acc, curr) => {
+            const duplicate = acc.find(({ serviceName }) => serviceName === curr.serviceName);
+            const result = {
+                ...curr,
+                exportName: duplicate
+                    ? camelCase(`${camelCase(curr.namespace)}${curr.serviceName}`)
+                    : curr.serviceName,
+            };
+            return [...acc, result];
+        }, []);
+    if (includedNamespaces.length === 0) {
+        return result;
+    }
+    return result.reduce(
+        (acc, curr) => (includedNamespaces.includes(curr.namespace) ? [...acc, curr] : [...acc]),
+        []
+    );
+};
 
 const rm = (path) =>
     new Promise((resolve, reject) => rimraf(path, (err) => (err ? reject(err) : resolve())));
@@ -49,70 +73,27 @@ const copyMetadata = async () =>
 const copyTsUtils = async () =>
     fse.copy(path.resolve(__dirname, 'utils'), path.resolve('clients/utils'));
 
-const build = async () =>
-    new Promise((resolve, reject) => {
-        webpack(
-            {
-                name: 'thrift-codegen',
-                mode: 'production',
-                entry: path.resolve('clients/index.ts'),
-                devtool: false,
-                module: {
-                    rules: [
-                        {
-                            test: /\.ts?$/,
-                            use: [
-                                {
-                                    loader: 'ts-loader',
-                                    options: {
-                                        context: __dirname,
-                                        configFile: path.resolve(__dirname, 'tsconfig.json'),
-                                    },
-                                },
-                            ],
-                            exclude: /node_modules/,
-                        },
-                    ],
-                },
-                resolve: {
-                    extensions: ['.ts', '.js'],
-                    alias: {
-                        thrift: path.resolve('node_modules/@vality/woody/dist/thrift'),
-                    },
-                },
-                output: {
-                    filename: 'thrift-codegen.bundle.js',
-                    path: path.resolve('dist'),
-                    globalObject: 'this',
-                    library: {
-                        name: 'thriftCodegen',
-                        type: 'umd',
-                    },
-                },
-            },
-            (err, stats) => {
-                if (err) {
-                    console.error(err);
-                    reject(err);
-                    return;
-                }
-                console.log(
-                    stats.toString({
-                        chunks: false, // Makes the build much quieter
-                        colors: true, // Shows colors in the console
-                    })
-                );
-                resolve();
-            }
-        );
-    });
-
 async function codegenClient() {
+    const argv = yargs(hideBin(process.argv)).options({
+        inputs: {
+            alias: 'i',
+            demandOption: true,
+            type: 'array',
+            description: 'List of thrift file folders for compilation.',
+        },
+        namespaces: {
+            alias: 'n',
+            demandOption: false,
+            default: [],
+            type: 'array',
+            description: 'List of namespaces which will be included into codegen client.',
+        },
+    }).argv;
     await clean();
     const outputPath = './clients';
     const outputProtoPath = `${outputPath}/internal`;
-    await compileProto(outputProtoPath);
-    const serviceTemplateConfig = prepareGenerateServiceConfig(outputProtoPath);
+    await compileProto(argv.inputs, outputProtoPath);
+    const serviceTemplateConfig = prepareGenerateServiceConfig(outputProtoPath, argv.namespaces);
     await generateServiceTemplate(serviceTemplateConfig, outputPath);
     await copyTsUtils();
     await build();

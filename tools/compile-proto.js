@@ -1,7 +1,6 @@
 const fs = require('fs');
 const path = require('path');
 const { exec } = require('child_process');
-const yargs = require('yargs');
 
 async function execWithLog(cmd, cwd = process.cwd()) {
     console.log(`> ${cmd}`);
@@ -65,17 +64,11 @@ function isThriftFile(file) {
     return path.parse(file).ext === '.thrift';
 }
 
-async function compileProto(resultDist) {
-    const argv = yargs.command('gen').option('dist', {
-        alias: 'd',
-        type: 'string',
-        description: 'Dist directory',
-        default: resultDist,
-    }).argv;
+async function compileProto(protoPaths, resultDist) {
     const PROJECT_PATH = process.cwd();
-    const PROTO_PATH = path.join(PROJECT_PATH, argv._[0]);
-    const DEPS_PATHS = argv._.slice(1).map((d) => path.join(PROJECT_PATH, d));
-    const DIST_PATH = path.join(PROJECT_PATH, argv.dist);
+    const PROTO_PATH = path.join(PROJECT_PATH, protoPaths[0]);
+    const DEPS_PATHS = protoPaths.slice(1).map((d) => path.join(PROJECT_PATH, d));
+    const DIST_PATH = path.join(PROJECT_PATH, resultDist);
     const PROTOS_FILES = fs.readdirSync(PROTO_PATH).filter((proto) => isThriftFile(proto));
     const codegens = [];
     for (const protoPath of PROTOS_FILES.map((proto) => path.join(PROTO_PATH, proto))) {

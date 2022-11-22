@@ -1,5 +1,4 @@
 import type { Field, Int64, JsonAST, ValueType } from '@vality/thrift-ts';
-import isNil from 'lodash-es/isNil';
 
 import {
     isComplexType,
@@ -16,36 +15,20 @@ export function thriftInstanceToObject(
     value: any,
     include?: JsonAST['include']
 ): any {
-    if (typeof value !== 'object' || isNil(value)) {
+    if (typeof value !== 'object' || value === null || value === undefined) {
         return value;
     }
-    const { namespace, type } = parseNamespaceType(
-        indefiniteType,
-        namespaceName
-    );
-    const internalThriftInstanceToObject = (
-        t: ValueType,
-        v: any,
-        include: JsonAST['include']
-    ) => thriftInstanceToObject(metadata, namespace, t, v, include);
+    const { namespace, type } = parseNamespaceType(indefiniteType, namespaceName);
+    const internalThriftInstanceToObject = (t: ValueType, v: any, include: JsonAST['include']) =>
+        thriftInstanceToObject(metadata, namespace, t, v, include);
     if (isComplexType(type)) {
         switch (type.name) {
             case 'map':
                 return new Map(
-                    Array.from(value as unknown as Map<any, any>).map(
-                        ([k, v]) => [
-                            internalThriftInstanceToObject(
-                                type.keyType,
-                                k,
-                                include
-                            ),
-                            internalThriftInstanceToObject(
-                                type.valueType,
-                                v,
-                                include
-                            ),
-                        ]
-                    )
+                    Array.from(value as unknown as Map<any, any>).map(([k, v]) => [
+                        internalThriftInstanceToObject(type.keyType, k, include),
+                        internalThriftInstanceToObject(type.valueType, v, include),
+                    ])
                 ) as unknown;
             case 'list':
                 return (value as unknown as any[]).map((v) =>
@@ -54,11 +37,7 @@ export function thriftInstanceToObject(
             case 'set':
                 return new Set(
                     Array.from(value as unknown as Set<any>).map((v) =>
-                        internalThriftInstanceToObject(
-                            type.valueType,
-                            v,
-                            include
-                        )
+                        internalThriftInstanceToObject(type.valueType, v, include)
                     )
                 ) as unknown;
             default:
@@ -92,32 +71,22 @@ export function thriftInstanceToObject(
             );
         }
         case 'union': {
-            const entries: any = Object.entries(value).find(
-                ([, v]) => v !== null
-            );
+            const entries: any = Object.entries(value).find(([, v]) => v !== null);
             const [key, val] = entries;
             type UnionType = Field[];
-            const fieldTypeMeta = (typeMeta as UnionType).find(
-                (m) => m.name === key
-            );
+            const fieldTypeMeta = (typeMeta as UnionType).find((m) => m.name === key);
             if (!fieldTypeMeta) {
                 throw new Error('fieldTypeMeta is null');
             }
             return {
-                [key]: internalThriftInstanceToObject(
-                    fieldTypeMeta.type,
-                    val,
-                    objectInclude
-                ),
+                [key]: internalThriftInstanceToObject(fieldTypeMeta.type, val, objectInclude),
             } as any;
         }
         default: {
             const result: any = {};
             for (const [k, v] of Object.entries(value)) {
                 type StructType = Field[];
-                const fieldTypeMeta = (typeMeta as StructType).find(
-                    (m) => m.name === k
-                );
+                const fieldTypeMeta = (typeMeta as StructType).find((m) => m.name === k);
                 if (!fieldTypeMeta) {
                     throw new Error('fieldTypeMeta is null');
                 }
