@@ -13,6 +13,7 @@
         "moduleResolution": "node",
         "sourceMap": false,
         "isolatedModules": true,
+        "esModuleInterop": true,
         "resolveJsonModule": true,
         "declaration": true
     },

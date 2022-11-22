@@ -68,7 +68,16 @@ const copyTypes = async () =>
     });
 
 const copyMetadata = async () =>
-    fse.copy(path.resolve('clients/internal/metadata.json'), path.resolve('dist/metadata.json'));
+    Promise.all([
+        fse.copy(
+            path.resolve('clients/internal/metadata.json'),
+            path.resolve('dist/metadata.json')
+        ),
+        fse.copy(
+            path.resolve(__dirname, 'types/metadata.d.ts'),
+            path.resolve('dist/types/metadata.d.ts')
+        ),
+    ]);
 
 const copyTsUtils = async () =>
     fse.copy(path.resolve(__dirname, 'utils'), path.resolve('clients/utils'));
