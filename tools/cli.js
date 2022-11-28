@@ -92,8 +92,7 @@ async function codegenClient() {
         },
         namespaces: {
             alias: 'n',
-            demandOption: false,
-            default: [],
+            demandOption: true,
             type: 'array',
             description: 'List of namespaces which will be included into codegen client.',
         },

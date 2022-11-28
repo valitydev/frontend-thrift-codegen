@@ -12,7 +12,7 @@
         "noEmit": false,
         "moduleResolution": "node",
         "sourceMap": false,
-        "isolatedModules": true,
+        "isolatedModules": false,
         "esModuleInterop": true,
         "resolveJsonModule": true,
         "declaration": true
