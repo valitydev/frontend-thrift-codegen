@@ -94,7 +94,7 @@ async function codegenClient() {
             alias: 'n',
             demandOption: true,
             type: 'array',
-            description: 'List of namespaces which will be included.',
+            description: 'List of service namespaces which will be included.',
         },
         types: {
             alias: 't',
