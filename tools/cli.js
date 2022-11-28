@@ -94,7 +94,13 @@ async function codegenClient() {
             alias: 'n',
             demandOption: true,
             type: 'array',
-            description: 'List of namespaces which will be included into codegen client.',
+            description: 'List of namespaces which will be included.',
+        },
+        types: {
+            alias: 't',
+            demandOption: true,
+            type: 'array',
+            description: 'List of types namespaces witch will be exported.',
         },
     }).argv;
     await clean();
@@ -102,7 +108,7 @@ async function codegenClient() {
     const outputProtoPath = `${outputPath}/internal`;
     await compileProto(argv.inputs, outputProtoPath);
     const serviceTemplateConfig = prepareGenerateServiceConfig(outputProtoPath, argv.namespaces);
-    await generateServiceTemplate(serviceTemplateConfig, outputPath);
+    await generateServiceTemplate(serviceTemplateConfig, argv.types, outputPath);
     await copyTsUtils();
     await build();
     await copyMetadata();
