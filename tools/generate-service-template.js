@@ -4,7 +4,7 @@ const { generateTemplateFilesBatch } = require('generate-template-files');
 
 const prepareIndexFileContent = (config, typeExportNamespaces) => {
     const serviceExports = config.reduce(
-        (acc, { exportName }) => acc.concat(`export { ${exportName} } from './${exportName}';\n`),
+        (acc, { exportName }) => acc.concat(`export * from './${exportName}';\n`),
         ''
     );
     return typeExportNamespaces.reduce(
