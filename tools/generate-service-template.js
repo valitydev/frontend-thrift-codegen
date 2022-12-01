@@ -14,7 +14,12 @@ const prepareIndexFileContent = (config, typeExportNamespaces) => {
     );
 };
 
-const generateServiceTemplate = async (config, typeExportNamespaces, outputPath) => {
+const generateServiceTemplate = async (
+    config,
+    typeExportNamespaces,
+    outputPath,
+    connectionPath
+) => {
     await generateTemplateFilesBatch([
         ...config.map(({ serviceName, namespace, exportName }) => ({
             option: 'Create thrift client',
@@ -27,6 +32,7 @@ const generateServiceTemplate = async (config, typeExportNamespaces, outputPath)
                 { slot: '__serviceName__', slotValue: serviceName },
                 { slot: '__namespace__', slotValue: namespace },
                 { slot: '__utilsPath__', slotValue: './utils' },
+                { slot: '__connectionPath__', slotValue: connectionPath },
             ],
             output: {
                 path: `${outputPath}/__exportName__.ts`,

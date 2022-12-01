@@ -1,9 +1,12 @@
 import connectClient from '@vality/woody';
-import { Connection, ConnectOptions, ThriftService } from './types';
+import { DeadlineConfig, KeyValue } from '@vality/woody/src/connect-options';
+import { Connection, ThriftService } from './types';
 
 export const connect = async (
-    { path, headers, deadlineConfig }: ConnectOptions,
-    service: ThriftService
+    path: string,
+    service: ThriftService,
+    headers?: KeyValue,
+    deadlineConfig?: DeadlineConfig
 ): Promise<Connection> => {
     return new Promise((resolve, reject) => {
         const connection = connectClient(
