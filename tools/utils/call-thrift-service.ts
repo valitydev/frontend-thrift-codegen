@@ -22,16 +22,24 @@ export const callThriftService = (
             throw new Error(`Service method ${methodName} call timeout`);
         }),
         new Promise((resolve, reject) => {
-            serviceMethod.call(connection, ...args, (err: unknown, result: unknown) => {
-                if (err) {
-                    console.error(`😞 ${namespace}.${serviceName}.${methodName}`, {
-                        err,
-                        args,
-                    });
-                    reject(err);
-                }
-                resolve(result);
-            });
+            try {
+                serviceMethod.call(connection, ...args, (exception: unknown, result: unknown) => {
+                    if (exception) {
+                        console.error(`🔴 ${namespace}.${serviceName}.${methodName}`, {
+                            exception,
+                            args,
+                        });
+                        reject(exception);
+                    }
+                    resolve(result);
+                });
+            } catch (error) {
+                console.error(`🔴 ${namespace}.${serviceName}.${methodName}`, {
+                    error,
+                    args,
+                });
+                reject(error);
+            }
         }),
     ]);
 };

@@ -30,10 +30,9 @@ export const codegenClientReducer =
         }: { serviceName: string; namespace: string; logging: boolean },
         context: ThriftContext
     ) =>
-    (acc: T, methodMeta: Method) => ({
+    (acc: T, { name, args, type }: Method) => ({
         ...acc,
-        [methodMeta.name]: async (...objectArgs: object[]): Promise<object> => {
-            const { name, args, type } = methodMeta;
+        [name]: async (...objectArgs: object[]): Promise<object> => {
             const thriftArgs = createArgInstances(objectArgs, args, meta, namespace, context);
             const thriftResponse = await callThriftService(connection, name, thriftArgs, {
                 namespace,
@@ -41,10 +40,9 @@ export const codegenClientReducer =
             });
             const response = thriftInstanceToObject(meta, namespace, type, thriftResponse);
             if (logging) {
-                console.info(`📨 ${namespace}.${serviceName}.${name}`, {
+                console.info(`🟢 ${namespace}.${serviceName}.${name}`, {
                     args: objectArgs,
                     response,
-                    methodMeta,
                 });
             }
             return response;
