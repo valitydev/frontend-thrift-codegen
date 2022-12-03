@@ -17,8 +17,9 @@ export const __exportName__ = async (options: ConnectOptions): Promise<__exportN
         codegenClientReducer<__exportName__Interface>(
             connection,
             options.metadata,
-            namespace,
-            context
+            { namespace, serviceName },
+            context,
+            options.logging
         ),
         {} as __exportName__Interface
     );

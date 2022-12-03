@@ -6,4 +6,5 @@ export interface ConnectOptions {
     headers: KeyValue;
     path?: string;
     deadlineConfig?: DeadlineConfig;
+    logging?: boolean;
 }
