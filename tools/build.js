@@ -8,7 +8,7 @@ const build = async () =>
                 name: 'thrift-codegen',
                 mode: 'production',
                 entry: path.resolve('clients/index.ts'),
-                devtool: false,
+                devtool: 'source-map',
                 module: {
                     rules: [
                         {

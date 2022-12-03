@@ -19,9 +19,8 @@ export const __exportName__ = async (
         codegenClientReducer<__exportName__CodegenClient>(
             connection,
             options.metadata,
-            { namespace, serviceName },
-            context,
-            options.logging
+            { namespace, serviceName, logging: options.logging || false },
+            context
         ),
         {} as __exportName__CodegenClient
     );

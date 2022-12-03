@@ -23,9 +23,12 @@ export const codegenClientReducer =
     <T>(
         connection: Connection,
         meta: ThriftAstMetadata[],
-        { serviceName, namespace }: { serviceName: string; namespace: string },
-        context: ThriftContext,
-        logging?: boolean
+        {
+            serviceName,
+            namespace,
+            logging,
+        }: { serviceName: string; namespace: string; logging: boolean },
+        context: ThriftContext
     ) =>
     (acc: T, methodMeta: Method) => ({
         ...acc,
