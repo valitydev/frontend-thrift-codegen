@@ -33,18 +33,23 @@ export const codegenClientReducer =
     (acc: T, { name, args, type }: Method) => ({
         ...acc,
         [name]: async (...objectArgs: object[]): Promise<object> => {
-            const thriftArgs = createArgInstances(objectArgs, args, meta, namespace, context);
-            const thriftResponse = await callThriftService(connection, name, thriftArgs, {
-                namespace,
-                serviceName,
-            });
-            const response = thriftInstanceToObject(meta, namespace, type, thriftResponse);
-            if (logging) {
-                console.info(`🟢 ${namespace}.${serviceName}.${name}`, {
-                    args: objectArgs,
-                    response,
+            try {
+                const thriftArgs = createArgInstances(objectArgs, args, meta, namespace, context);
+                const thriftResponse = await callThriftService(connection, name, thriftArgs);
+                const response = thriftInstanceToObject(meta, namespace, type, thriftResponse);
+                if (logging) {
+                    console.info(`🟢 ${namespace}.${serviceName}.${name}`, {
+                        args: objectArgs,
+                        response,
+                    });
+                }
+                return response;
+            } catch (error: any) {
+                console.error(`🔴 ${namespace}.${serviceName}.${name}`, {
+                    error,
+                    args,
                 });
+                throw error;
             }
-            return response;
         },
     });
