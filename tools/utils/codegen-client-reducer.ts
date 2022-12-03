@@ -1,11 +1,26 @@
 import { ArgOrExecption, Method } from '@vality/thrift-ts';
 
 import { createThriftInstance } from './create-thrift-instance';
-import { ThriftAstMetadata, Connection } from './types';
+import { ThriftAstMetadata, ThriftService } from './types';
 import { callThriftService } from './call-thrift-service';
 import { thriftInstanceToObject } from './thrift-instance-to-object';
+import { DeadlineConfig, KeyValue } from '@vality/woody/src/connect-options';
+import { connect } from './connect';
 
 export type ThriftContext = any;
+
+export interface ConnectionContext {
+    path: string;
+    service: ThriftService;
+    headers?: KeyValue;
+    deadlineConfig?: DeadlineConfig;
+}
+
+export interface LoggingContext {
+    serviceName: string;
+    namespace: string;
+    logging: boolean;
+}
 
 const createArgInstances = (
     argObjects: object[],
@@ -21,19 +36,20 @@ const createArgInstances = (
 
 export const codegenClientReducer =
     <T>(
-        connection: Connection,
+        { path, service, headers, deadlineConfig }: ConnectionContext,
         meta: ThriftAstMetadata[],
-        {
-            serviceName,
-            namespace,
-            logging,
-        }: { serviceName: string; namespace: string; logging: boolean },
+        { serviceName, namespace, logging }: LoggingContext,
         context: ThriftContext
     ) =>
     (acc: T, { name, args, type }: Method) => ({
         ...acc,
         [name]: async (...objectArgs: object[]): Promise<object> => {
             try {
+                /**
+                 * Connection errors come with HTTP errors (!= 200) and should be handled with errors from the service.
+                 * You need to have 1 free connection per request. Otherwise, the error cannot be caught or identified.
+                 */
+                const connection = await connect(path, service, headers, deadlineConfig);
                 const thriftArgs = createArgInstances(objectArgs, args, meta, namespace, context);
                 const thriftResponse = await callThriftService(connection, name, thriftArgs);
                 const response = thriftInstanceToObject(meta, namespace, type, thriftResponse);

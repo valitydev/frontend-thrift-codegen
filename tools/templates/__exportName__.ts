@@ -12,14 +12,19 @@ export const __exportName__ = async (
 ): Promise<__exportName__CodegenClient> => {
     const serviceName = '__serviceName__';
     const namespace = '__namespace__';
-    const path = options.path || '__connectionPath__';
-    const connection = await connect(path, service, options.headers, options.deadlineConfig);
     const methodsMeta = getMethodsMetadata(options.metadata, namespace, serviceName);
+    const connectionContext = {
+        path: options.path || '__connectionPath__',
+        service,
+        headers: options.headers,
+        deadlineConfig: options.deadlineConfig,
+    };
+    const loggingContext = { namespace, serviceName, logging: options.logging || false };
     return methodsMeta.reduce(
         codegenClientReducer<__exportName__CodegenClient>(
-            connection,
+            connectionContext,
             options.metadata,
-            { namespace, serviceName, logging: options.logging || false },
+            loggingContext,
             context
         ),
         {} as __exportName__CodegenClient
