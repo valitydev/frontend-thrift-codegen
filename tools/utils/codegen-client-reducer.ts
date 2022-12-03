@@ -1,11 +1,11 @@
 import { ArgOrExecption, Method } from '@vality/thrift-ts';
+import connectClient from '@vality/woody';
+import { DeadlineConfig, KeyValue } from '@vality/woody/src/connect-options';
 
 import { createThriftInstance } from './create-thrift-instance';
 import { ThriftAstMetadata, ThriftService } from './types';
 import { callThriftService } from './call-thrift-service';
 import { thriftInstanceToObject } from './thrift-instance-to-object';
-import { DeadlineConfig, KeyValue } from '@vality/woody/src/connect-options';
-import { connect } from './connect';
 
 export type ThriftContext = any;
 
@@ -49,7 +49,17 @@ export const codegenClientReducer =
                  * Connection errors come with HTTP errors (!= 200) and should be handled with errors from the service.
                  * You need to have 1 free connection per request. Otherwise, the error cannot be caught or identified.
                  */
-                const connection = await connect(path, service, headers, deadlineConfig);
+                const connection = connectClient(
+                    location.hostname,
+                    location.port,
+                    path,
+                    service,
+                    {
+                        headers,
+                        deadlineConfig,
+                    },
+                    () => {}
+                );
                 const thriftArgs = createArgInstances(objectArgs, args, meta, namespace, context);
                 const thriftResponse = await callThriftService(connection, name, thriftArgs);
                 const response = thriftInstanceToObject(meta, namespace, type, thriftResponse);
