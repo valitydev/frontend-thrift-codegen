@@ -11,12 +11,10 @@ thrift-codegen [options]
 Options:
 
 ```
-  -i, --inputs      List of thrift file folders for compilation.
-                                                              [array] [required]
-  -n, --namespaces  List of service namespaces which will be included.
-                                                              [array] [required]
-  -t, --types       List of types namespaces witch will be exported.
-                                                              [array] [required]
+  -i, --inputs      List of thrift file folders for compilation. [array] [required]
+  -n, --namespaces  List of service namespaces which will be included. [array] [required]
+  -t, --types       List of types namespaces witch will be exported. [array] [required]
+  -p, --path        Default service connection path. [string] [required]
 ```
 
 ## Testing

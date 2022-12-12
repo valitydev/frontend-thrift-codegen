@@ -4,8 +4,7 @@
   "description": "",
   "scripts": {
     "check": "prettier \"**/*.{html,js,ts,css,scss,md,json,prettierrc,svg,huskyrc,yml,yaml}\" --list-different",
-    "codegen": "bin/index.js",
-    "compile": "tsc -b ./tsconfig.json"
+    "codegen": "bin/index.js"
   },
   "author": "Vality",
   "license": "Apache-2.0",

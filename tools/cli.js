@@ -106,7 +106,7 @@ async function codegenClient() {
             alias: 'p',
             demandOption: true,
             type: 'string',
-            description: 'Default service connection path',
+            description: 'Default service connection path.',
         },
     }).argv;
     await clean();
