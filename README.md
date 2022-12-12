@@ -1,9 +1,30 @@
 # Frontend Thrift Codegen CLI
 
-Generate NodeJS/JS code, create models and metadata by Thrift services.
+This project allows generation of JS client library, typings and json metadata automatically given a thrift spec.
 
 ## Usage
 
-```shell
-thirft-codegen
 ```
+thrift-codegen [options]
+```
+
+Options:
+
+```
+  -i, --inputs      List of thrift file folders for compilation.
+                                                              [array] [required]
+  -n, --namespaces  List of service namespaces which will be included.
+                                                              [array] [required]
+  -t, --types       List of types namespaces witch will be exported.
+                                                              [array] [required]
+```
+
+## Testing
+
+-   Copy thrift spec to `proto` directory. For example [damsel](https://github.com/valitydev/damsel).
+
+-   Run
+
+        npm run codegen -- --i ./proto --n domain_config --t domain_config domain --p /wacher
+
+-   Codegen client will be available in `dist` directory.

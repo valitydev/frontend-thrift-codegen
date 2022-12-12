@@ -44,32 +44,44 @@ export const codegenClientReducer =
     (acc: T, { name, args, type }: Method) => ({
         ...acc,
         [name]: async (...objectArgs: object[]): Promise<object> => {
+            const thriftMethod = (): Promise<object> =>
+                new Promise(async (resolve, reject) => {
+                    const thriftArgs = createArgInstances(
+                        objectArgs,
+                        args,
+                        meta,
+                        namespace,
+                        context
+                    );
+                    /**
+                     * Connection errors come with HTTP errors (!= 200) and should be handled with errors from the service.
+                     * You need to have 1 free connection per request. Otherwise, the error cannot be caught or identified.
+                     */
+                    const connection = connectClient(
+                        location.hostname,
+                        location.port,
+                        path,
+                        service,
+                        {
+                            headers,
+                            deadlineConfig,
+                        },
+                        (err) => {
+                            reject(err);
+                        }
+                    ) as any;
+                    const thriftResponse = await callThriftService(connection, name, thriftArgs);
+                    const response = thriftInstanceToObject(meta, namespace, type, thriftResponse);
+                    if (logging) {
+                        console.info(`🟢 ${namespace}.${serviceName}.${name}`, {
+                            args: objectArgs,
+                            response,
+                        });
+                    }
+                    resolve(response);
+                });
             try {
-                /**
-                 * Connection errors come with HTTP errors (!= 200) and should be handled with errors from the service.
-                 * You need to have 1 free connection per request. Otherwise, the error cannot be caught or identified.
-                 */
-                const connection = connectClient(
-                    location.hostname,
-                    location.port,
-                    path,
-                    service,
-                    {
-                        headers,
-                        deadlineConfig,
-                    },
-                    () => {}
-                );
-                const thriftArgs = createArgInstances(objectArgs, args, meta, namespace, context);
-                const thriftResponse = await callThriftService(connection, name, thriftArgs);
-                const response = thriftInstanceToObject(meta, namespace, type, thriftResponse);
-                if (logging) {
-                    console.info(`🟢 ${namespace}.${serviceName}.${name}`, {
-                        args: objectArgs,
-                        response,
-                    });
-                }
-                return response;
+                return await thriftMethod();
             } catch (error: any) {
                 console.error(`🔴 ${namespace}.${serviceName}.${name}`, {
                     error,
