@@ -21,41 +21,17 @@ export function createThriftInstance<V>(
     if (isThriftObject(value)) {
         return value;
     }
-    const { namespace, type } = parseNamespaceType(
-        indefiniteType,
-        namespaceName
-    );
-    const internalCreateThriftInstance = (
-        t: ValueType,
-        v: V,
-        include: JsonAST['include']
-    ) =>
-        createThriftInstance(
-            metadata,
-            instanceContext,
-            namespace,
-            t,
-            v,
-            include
-        );
+    const { namespace, type } = parseNamespaceType(indefiniteType, namespaceName);
+    const internalCreateThriftInstance = (t: ValueType, v: V, include: JsonAST['include']) =>
+        createThriftInstance(metadata, instanceContext, namespace, t, v, include);
     if (isComplexType(type)) {
         switch (type.name) {
             case 'map':
                 return new Map(
-                    Array.from(value as unknown as Map<any, any>).map(
-                        ([k, v]) => [
-                            internalCreateThriftInstance(
-                                type.keyType,
-                                k,
-                                include
-                            ),
-                            internalCreateThriftInstance(
-                                type.valueType,
-                                v,
-                                include
-                            ),
-                        ]
-                    )
+                    Array.from(value as unknown as Map<any, any>).map(([k, v]) => [
+                        internalCreateThriftInstance(type.keyType, k, include),
+                        internalCreateThriftInstance(type.valueType, v, include),
+                    ])
                 ) as unknown as V;
             case 'list':
                 return (value as unknown as any[]).map((v) =>
@@ -91,18 +67,12 @@ export function createThriftInstance<V>(
             try {
                 if (objectType === 'typedef') {
                     const typedefMeta = (typeMeta as { type: ValueType }).type;
-                    return internalCreateThriftInstance(
-                        typedefMeta,
-                        value,
-                        objectInclude
-                    );
+                    return internalCreateThriftInstance(typedefMeta, value, objectInclude);
                 }
                 const instance = new instanceContext[namespace][type]();
                 for (const [k, v] of Object.entries(value as any)) {
                     type StructOrUnionType = Field[];
-                    const fieldTypeMeta = (typeMeta as StructOrUnionType).find(
-                        (m) => m.name === k
-                    );
+                    const fieldTypeMeta = (typeMeta as StructOrUnionType).find((m) => m.name === k);
                     if (!fieldTypeMeta) {
                         throw new Error('fieldTypeMeta is null');
                     }

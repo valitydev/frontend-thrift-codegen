@@ -9,15 +9,11 @@ const getServiceMetadata = (
     const namespaceMeta = metadata.find((m) => m.name === namespace);
     const servicesMeta = namespaceMeta?.ast?.service;
     if (!servicesMeta) {
-        throw new Error(
-            `Service metadata is not found with namespace ${namespace}`
-        );
+        throw new Error(`Service metadata is not found with namespace ${namespace}`);
     }
     const serviceMeta = servicesMeta[serviceName];
     if (!serviceMeta) {
-        throw new Error(
-            `Service metadata is not found with serviceName ${serviceName}`
-        );
+        throw new Error(`Service metadata is not found with serviceName ${serviceName}`);
     }
     return serviceMeta;
 };

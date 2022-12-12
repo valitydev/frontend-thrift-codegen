@@ -3,7 +3,8 @@
   "version": "1.1.0",
   "description": "",
   "scripts": {
-    "check": "prettier \"**/*.{html,js,ts,css,scss,md,json,prettierrc,svg,huskyrc,yml,yaml}\" --list-different",
+    "prettier:check": "prettier \"**\" --list-different --ignore-unknown",
+    "prettier:write": "prettier \"**\" --write --ignore-unknown",
     "codegen": "bin/index.js"
   },
   "author": "Vality",

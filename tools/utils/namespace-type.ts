@@ -1,10 +1,4 @@
-import type {
-    ListType,
-    MapType,
-    SetType,
-    ThriftType,
-    ValueType,
-} from '@vality/thrift-ts';
+import type { ListType, MapType, SetType, ThriftType, ValueType } from '@vality/thrift-ts';
 import { JsonAST } from '@vality/thrift-ts';
 
 export const PRIMITIVE_TYPES = [
@@ -20,14 +14,10 @@ export const PRIMITIVE_TYPES = [
 ] as const;
 
 export function isThriftObject(value: any): boolean {
-    return (
-        typeof value?.write === 'function' && typeof value?.read === 'function'
-    );
+    return typeof value?.write === 'function' && typeof value?.read === 'function';
 }
 
-export function isComplexType(
-    type: ValueType
-): type is SetType | ListType | MapType {
+export function isComplexType(type: ValueType): type is SetType | ListType | MapType {
     return typeof type === 'object';
 }
 
@@ -35,13 +25,7 @@ export function isPrimitiveType(type: ValueType): type is ThriftType {
     return PRIMITIVE_TYPES.includes(type as never);
 }
 
-export const STRUCTURE_TYPES = [
-    'typedef',
-    'struct',
-    'union',
-    'exception',
-    'enum',
-] as const;
+export const STRUCTURE_TYPES = ['typedef', 'struct', 'union', 'exception', 'enum'] as const;
 export type StructureType = typeof STRUCTURE_TYPES[number];
 
 export interface NamespaceObjectType {
@@ -59,16 +43,12 @@ export function parseNamespaceObjectType(
     // metadata reverse find - search for the last matching protocol if the names match (files are overwritten in the same order)
     let namespaceMetadata: any;
     if (include)
-        namespaceMetadata = metadata
-            .reverse()
-            .find((m) => m.path === include[namespace].path);
+        namespaceMetadata = metadata.reverse().find((m) => m.path === include[namespace].path);
     if (!namespaceMetadata)
-        namespaceMetadata = metadata
-            .reverse()
-            .find((m) => m.name === namespace);
-    const objectType = (
-        Object.keys(namespaceMetadata.ast) as StructureType[]
-    ).find((t) => namespaceMetadata.ast[t][type]);
+        namespaceMetadata = metadata.reverse().find((m) => m.name === namespace);
+    const objectType = (Object.keys(namespaceMetadata.ast) as StructureType[]).find(
+        (t) => namespaceMetadata.ast[t][type]
+    );
     if (!objectType || !STRUCTURE_TYPES.includes(objectType)) {
         throw new Error(`Unknown thrift structure type: ${objectType}`);
     }

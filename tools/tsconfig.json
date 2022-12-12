@@ -17,10 +17,6 @@
         "resolveJsonModule": true,
         "declaration": true
     },
-    "include": [
-        "./"
-    ],
-    "exclude":[
-        "./templates", "./utils"
-    ],
+    "include": ["./"],
+    "exclude": ["./templates", "./utils"]
 }
