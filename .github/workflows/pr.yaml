@@ -11,4 +11,4 @@ jobs:
             - uses: valitydev/action-frontend/setup@v0.1
             - run: npm ci
             - name: Prettier check
-                run: npm run prettier:check
+              run: npm run prettier:check
