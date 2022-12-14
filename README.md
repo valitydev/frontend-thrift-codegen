@@ -23,6 +23,6 @@ Options:
 
 -   Run
 
-        npm run codegen -- --i ./proto --n domain_config --t domain_config domain --p /wacher
+        npm run codegen -- --i ./proto --n domain_config --t domain_config domain --p /wachter
 
 -   Codegen client will be available in `dist` directory.

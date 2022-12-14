@@ -83,10 +83,12 @@ export const codegenClientReducer =
             try {
                 return await thriftMethod();
             } catch (error: any) {
-                console.error(`🔴 ${namespace}.${serviceName}.${name}`, {
-                    error,
-                    args,
-                });
+                if (logging) {
+                    console.error(`🔴 ${namespace}.${serviceName}.${name}`, {
+                        error,
+                        args,
+                    });
+                }
                 throw error;
             }
         },
