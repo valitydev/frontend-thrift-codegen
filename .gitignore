@@ -1,1 +1,5 @@
 node_modules
+proto
+dist
+clients
+tools/stub.d.ts
