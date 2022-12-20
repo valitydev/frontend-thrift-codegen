@@ -1,7 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 
-const build = async () =>
+const build = () =>
     new Promise((resolve, reject) => {
         webpack(
             {
@@ -54,7 +54,7 @@ const build = async () =>
                         colors: true,
                     })
                 );
-                resolve();
+                stats.hasErrors() ? reject('Build failed') : resolve();
             }
         );
     });
