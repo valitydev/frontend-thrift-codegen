@@ -4,7 +4,7 @@ import { ThriftAstMetadata } from './thrift-ast-metadata';
 export interface ConnectOptions {
     metadata: ThriftAstMetadata[];
     headers: KeyValue;
-    path?: string;
+    path: string;
     deadlineConfig?: DeadlineConfig;
     logging?: boolean;
 }

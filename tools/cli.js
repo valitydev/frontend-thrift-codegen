@@ -1,50 +1,14 @@
-const fs = require('fs');
 const fse = require('fs-extra');
 const glob = require('glob');
 const path = require('path');
 const rimraf = require('rimraf');
-const camelCase = require('lodash/camelCase');
 const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
 
 const compileProto = require('./compile-proto');
 const generateServiceTemplate = require('./generate-service-template');
+const prepareGenerateServiceConfig = require('./prepare-generate-service-config');
 const build = require('./build');
-
-/**
- * Dist with compiled proto contains files with name: '{namespace}-{serviceName}.ext'
- * Pair of namespace and serviceName requires for preparing codegen client.
- */
-const prepareGenerateServiceConfig = (compiledDist, includedNamespaces) => {
-    const result = fs
-        .readdirSync(compiledDist)
-        .map((filePath) => path.parse(filePath))
-        .filter(({ ext, name }) => ext === '.js' && name.includes('-'))
-        .map(({ name }) => {
-            const [namespace, serviceName] = name.split('-');
-            return {
-                namespace,
-                serviceName,
-            };
-        })
-        .reduce((acc, curr) => {
-            const duplicate = acc.find(({ serviceName }) => serviceName === curr.serviceName);
-            const result = {
-                ...curr,
-                exportName: duplicate
-                    ? camelCase(`${camelCase(curr.namespace)}${curr.serviceName}`)
-                    : curr.serviceName,
-            };
-            return [...acc, result];
-        }, []);
-    if (includedNamespaces.length === 0) {
-        return result;
-    }
-    return result.reduce(
-        (acc, curr) => (includedNamespaces.includes(curr.namespace) ? [...acc, curr] : [...acc]),
-        []
-    );
-};
 
 const rm = (path) =>
     new Promise((resolve, reject) => rimraf(path, (err) => (err ? reject(err) : resolve())));
@@ -96,25 +60,13 @@ async function codegenClient() {
             type: 'array',
             description: 'List of service namespaces which will be included.',
         },
-        types: {
-            alias: 't',
-            demandOption: true,
-            type: 'array',
-            description: 'List of types namespaces witch will be exported.',
-        },
-        path: {
-            alias: 'p',
-            demandOption: true,
-            type: 'string',
-            description: 'Default service connection path.',
-        },
     }).argv;
     await clean();
     const outputPath = './clients';
     const outputProtoPath = `${outputPath}/internal`;
     await compileProto(argv.inputs, outputProtoPath);
     const serviceTemplateConfig = prepareGenerateServiceConfig(outputProtoPath, argv.namespaces);
-    await generateServiceTemplate(serviceTemplateConfig, argv.types, outputPath, argv.path);
+    await generateServiceTemplate(serviceTemplateConfig, argv.namespaces, outputPath);
     await copyTsUtils();
     await build();
     await copyMetadata();
