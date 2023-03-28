@@ -8,6 +8,15 @@ import {
 } from './namespace-type';
 import { ThriftAstMetadata } from './types';
 
+const toNumber = (value: Int64): number => {
+    const noImprecise = value.toNumber();
+    if (noImprecise === Infinity) {
+        console.warn('Very large positive or negative i64 number. Result will be imprecise.');
+        return value.toNumber(true);
+    }
+    return noImprecise;
+};
+
 export function thriftInstanceToObject(
     metadata: ThriftAstMetadata[],
     namespaceName: string,
@@ -46,7 +55,7 @@ export function thriftInstanceToObject(
     } else if (isPrimitiveType(type)) {
         switch (type) {
             case 'i64':
-                return (value as unknown as Int64).toNumber() as unknown;
+                return toNumber(value);
             default:
                 return value;
         }
