@@ -5,7 +5,8 @@
   "scripts": {
     "prettier:check": "prettier \"**\" --list-different --ignore-unknown",
     "prettier:write": "prettier \"**\" --write --ignore-unknown",
-    "codegen": "bin/index.js"
+    "codegen": "bin/index.js",
+    "test": "jest"
   },
   "author": "Vality",
   "license": "Apache-2.0",
@@ -30,6 +31,9 @@
     "yargs": "17.3.1"
   },
   "devDependencies": {
-    "prettier": "2.5.1"
+    "@types/jest": "29.5.0",
+    "jest": "29.5.0",
+    "prettier": "2.5.1",
+    "ts-jest": "29.0.5"
   }
 }

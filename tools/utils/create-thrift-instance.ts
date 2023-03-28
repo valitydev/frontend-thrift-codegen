@@ -10,14 +10,21 @@ import {
 } from './namespace-type';
 import { ThriftAstMetadata } from './types';
 
+const toInt64 = (value: number): Int64 => {
+    if (value > Number.MAX_SAFE_INTEGER || value < Number.MIN_SAFE_INTEGER) {
+        throw new Error('Number is out of range');
+    }
+    return new Int64(value);
+};
+
 export function createThriftInstance<V>(
     metadata: ThriftAstMetadata[],
     instanceContext: any,
     namespaceName: string,
     indefiniteType: ValueType,
-    value: V,
+    value: any,
     include?: JsonAST['include']
-): V {
+): any {
     if (isThriftObject(value)) {
         return value;
     }
@@ -47,7 +54,7 @@ export function createThriftInstance<V>(
     } else if (isPrimitiveType(type)) {
         switch (type) {
             case 'i64':
-                return new Int64(value as any) as any;
+                return toInt64(value);
             default:
                 return value;
         }
