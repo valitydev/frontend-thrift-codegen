@@ -19,12 +19,17 @@ export const __exportName__ = async (
         headers: options.headers,
         deadlineConfig: options.deadlineConfig,
     };
-    const loggingContext = { namespace, serviceName, logging: options.logging || false };
+    const clientSettings = {
+        namespace,
+        serviceName,
+        logging: options.logging || false,
+        i64SafeRangeCheck: options.i64SafeRangeCheck || true,
+    };
     return methodsMeta.reduce(
         codegenClientReducer<__exportName__CodegenClient>(
             connectionContext,
             options.metadata,
-            loggingContext,
+            clientSettings,
             context
         ),
         {} as __exportName__CodegenClient

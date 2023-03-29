@@ -16,10 +16,11 @@ export interface ConnectionContext {
     deadlineConfig?: DeadlineConfig;
 }
 
-export interface LoggingContext {
+export interface ClientSettings {
     serviceName: string;
     namespace: string;
     logging: boolean;
+    i64SafeRangeCheck: boolean;
 }
 
 const createArgInstances = (
@@ -27,18 +28,19 @@ const createArgInstances = (
     argsMetadata: ArgOrExecption[],
     metadata: ThriftAstMetadata[],
     namespace: string,
-    context: ThriftContext
+    context: ThriftContext,
+    i64SafeRangeCheck: boolean
 ) =>
     argObjects.map((argObj, id) => {
         const type = argsMetadata[id].type;
-        return createThriftInstance(metadata, context, namespace, type, argObj);
+        return createThriftInstance(metadata, context, namespace, type, argObj, i64SafeRangeCheck);
     });
 
 export const codegenClientReducer =
     <T>(
         { path, service, headers, deadlineConfig }: ConnectionContext,
         meta: ThriftAstMetadata[],
-        { serviceName, namespace, logging }: LoggingContext,
+        { serviceName, namespace, logging, i64SafeRangeCheck }: ClientSettings,
         context: ThriftContext
     ) =>
     (acc: T, { name, args, type }: Method) => ({
@@ -52,7 +54,8 @@ export const codegenClientReducer =
                             args,
                             meta,
                             namespace,
-                            context
+                            context,
+                            i64SafeRangeCheck
                         );
                         /**
                          * Connection errors come with HTTP errors (!= 200) and should be handled with errors from the service.
