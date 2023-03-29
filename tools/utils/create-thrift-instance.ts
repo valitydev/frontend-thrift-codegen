@@ -10,8 +10,8 @@ import {
 } from './namespace-type';
 import { ThriftAstMetadata } from './types';
 
-const toInt64 = (value: number): Int64 => {
-    if (value > Number.MAX_SAFE_INTEGER || value < Number.MIN_SAFE_INTEGER) {
+const toInt64 = (value: number, safeRangeCheck: boolean): Int64 => {
+    if (safeRangeCheck && (value > Number.MAX_SAFE_INTEGER || value < Number.MIN_SAFE_INTEGER)) {
         throw new Error('Number is out of range');
     }
     return new Int64(value);
@@ -23,6 +23,7 @@ export function createThriftInstance<V>(
     namespaceName: string,
     indefiniteType: ValueType,
     value: any,
+    i64SafeRangeCheck: boolean,
     include?: JsonAST['include']
 ): any {
     if (isThriftObject(value)) {
@@ -30,7 +31,15 @@ export function createThriftInstance<V>(
     }
     const { namespace, type } = parseNamespaceType(indefiniteType, namespaceName);
     const internalCreateThriftInstance = (t: ValueType, v: V, include: JsonAST['include']) =>
-        createThriftInstance(metadata, instanceContext, namespace, t, v, include);
+        createThriftInstance(
+            metadata,
+            instanceContext,
+            namespace,
+            t,
+            v,
+            i64SafeRangeCheck,
+            include
+        );
     if (isComplexType(type)) {
         switch (type.name) {
             case 'map':
@@ -54,7 +63,7 @@ export function createThriftInstance<V>(
     } else if (isPrimitiveType(type)) {
         switch (type) {
             case 'i64':
-                return toInt64(value);
+                return toInt64(value, i64SafeRangeCheck);
             default:
                 return value;
         }

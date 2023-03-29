@@ -43,34 +43,78 @@ describe('createThriftInstance', () => {
         },
     ];
 
-    test('create out of range integer', () => {
-        const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    describe('with i64 save range check', () => {
+        const i64SafeRangeCheck = true;
 
-        const value = {
-            p: 1000,
-            q: 1000000000000000000,
-        };
+        test('create out of range integer', () => {
+            const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
-        expect(() =>
-            createThriftInstance(metadata, instanceContext, 'base', 'Rational', value)
-        ).toThrowError('Number is out of range');
-        expect(errorSpy).toHaveBeenCalled();
+            const value = {
+                p: 1000,
+                q: 1000000000000000000,
+            };
 
-        errorSpy.mockRestore();
+            expect(() =>
+                createThriftInstance(
+                    metadata,
+                    instanceContext,
+                    'base',
+                    'Rational',
+                    value,
+                    i64SafeRangeCheck
+                )
+            ).toThrowError('Number is out of range');
+            expect(errorSpy).toHaveBeenCalled();
+
+            errorSpy.mockRestore();
+        });
+
+        test('create in range integer', () => {
+            const value = {
+                p: 1000,
+                q: 900719925474099,
+            };
+
+            const result = createThriftInstance(
+                metadata,
+                instanceContext,
+                'base',
+                'Rational',
+                value,
+                i64SafeRangeCheck
+            );
+
+            const expected = new Rational({
+                p: new Int64(1000),
+                q: new Int64(900719925474099),
+            });
+            expect(result).toStrictEqual(expected);
+        });
     });
 
-    test('create in range integer', () => {
-        const value = {
-            p: 1000,
-            q: 900719925474099,
-        };
+    describe('without i64 save range check', () => {
+        const i64SafeRangeCheck = false;
 
-        const result = createThriftInstance(metadata, instanceContext, 'base', 'Rational', value);
+        test('create out of range integer', () => {
+            const value = {
+                p: 1000,
+                q: 1000000000000000000,
+            };
 
-        const expected = new Rational({
-            p: new Int64(1000),
-            q: new Int64(900719925474099),
+            const result = createThriftInstance(
+                metadata,
+                instanceContext,
+                'base',
+                'Rational',
+                value,
+                i64SafeRangeCheck
+            );
+
+            const expected = new Rational({
+                p: new Int64(1000),
+                q: new Int64(1000000000000000000),
+            });
+            expect(result).toStrictEqual(expected);
         });
-        expect(result).toStrictEqual(expected);
     });
 });

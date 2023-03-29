@@ -7,4 +7,5 @@ export interface ConnectOptions {
     path: string;
     deadlineConfig?: DeadlineConfig;
     logging?: boolean;
+    i64SafeRangeCheck?: boolean;
 }
