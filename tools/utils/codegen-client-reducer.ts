@@ -40,7 +40,7 @@ const createArgInstances = (
 
 export const codegenClientReducer =
     <T>(
-        { path, service, headers, deadlineConfig, hostname = location.hostname, port = location.port }: ConnectionContext,
+        { path, service, headers, deadlineConfig, hostname, port }: ConnectionContext,
         meta: ThriftAstMetadata[],
         { serviceName, namespace, logging, i64SafeRangeCheck }: ClientSettings,
         context: ThriftContext
@@ -64,8 +64,8 @@ export const codegenClientReducer =
                          * You need to have 1 free connection per request. Otherwise, the error cannot be caught or identified.
                          */
                         const connection = connectClient(
-                            hostname,
-                            port,
+                            hostname ?? location.hostname,
+                            port ?? (hostname ? undefined : location.port),
                             path,
                             service,
                             {
