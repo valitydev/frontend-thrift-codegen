@@ -12,6 +12,8 @@ export type ThriftContext = any;
 export interface ConnectionContext {
     path: string;
     service: ThriftService;
+    hostname?: string;
+    port?: string;
     headers?: KeyValue;
     deadlineConfig?: DeadlineConfig;
 }
@@ -38,7 +40,7 @@ const createArgInstances = (
 
 export const codegenClientReducer =
     <T>(
-        { path, service, headers, deadlineConfig }: ConnectionContext,
+        { path, service, headers, deadlineConfig, hostname = location.hostname, port = location.port }: ConnectionContext,
         meta: ThriftAstMetadata[],
         { serviceName, namespace, logging, i64SafeRangeCheck }: ClientSettings,
         context: ThriftContext
@@ -62,8 +64,8 @@ export const codegenClientReducer =
                          * You need to have 1 free connection per request. Otherwise, the error cannot be caught or identified.
                          */
                         const connection = connectClient(
-                            location.hostname,
-                            location.port,
+                            hostname,
+                            port,
                             path,
                             service,
                             {
