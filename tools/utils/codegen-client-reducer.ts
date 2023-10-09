@@ -12,6 +12,8 @@ export type ThriftContext = any;
 export interface ConnectionContext {
     path: string;
     service: ThriftService;
+    hostname?: string;
+    port?: string;
     headers?: KeyValue;
     deadlineConfig?: DeadlineConfig;
 }
@@ -29,7 +31,7 @@ const createArgInstances = (
     metadata: ThriftAstMetadata[],
     namespace: string,
     context: ThriftContext,
-    i64SafeRangeCheck: boolean
+    i64SafeRangeCheck: boolean,
 ) =>
     argObjects.map((argObj, id) => {
         const type = argsMetadata[id].type;
@@ -38,10 +40,10 @@ const createArgInstances = (
 
 export const codegenClientReducer =
     <T>(
-        { path, service, headers, deadlineConfig }: ConnectionContext,
+        { path, service, headers, deadlineConfig, hostname, port }: ConnectionContext,
         meta: ThriftAstMetadata[],
         { serviceName, namespace, logging, i64SafeRangeCheck }: ClientSettings,
-        context: ThriftContext
+        context: ThriftContext,
     ) =>
     (acc: T, { name, args, type }: Method) => ({
         ...acc,
@@ -55,15 +57,15 @@ export const codegenClientReducer =
                             meta,
                             namespace,
                             context,
-                            i64SafeRangeCheck
+                            i64SafeRangeCheck,
                         );
                         /**
                          * Connection errors come with HTTP errors (!= 200) and should be handled with errors from the service.
                          * You need to have 1 free connection per request. Otherwise, the error cannot be caught or identified.
                          */
                         const connection = connectClient(
-                            location.hostname,
-                            location.port,
+                            hostname ?? location.hostname,
+                            port ?? (hostname ? undefined : location.port),
                             path,
                             service,
                             {
@@ -72,23 +74,24 @@ export const codegenClientReducer =
                             },
                             (err) => {
                                 reject(err);
-                            }
+                            },
                         ) as any;
                         const thriftResponse = await callThriftService(
                             connection,
                             name,
-                            thriftArgs
+                            thriftArgs,
                         );
                         const response = thriftInstanceToObject(
                             meta,
                             namespace,
                             type,
-                            thriftResponse
+                            thriftResponse,
                         );
                         if (logging) {
                             console.info(`🟢 ${namespace}.${serviceName}.${name}`, {
                                 args: objectArgs,
                                 response,
+                                headers,
                             });
                         }
                         resolve(response);
@@ -101,8 +104,9 @@ export const codegenClientReducer =
             } catch (error: any) {
                 if (logging) {
                     console.error(`🔴 ${namespace}.${serviceName}.${name}`, {
+                        args: objectArgs,
                         error,
-                        args,
+                        headers,
                     });
                 }
                 throw error;

@@ -35,11 +35,11 @@ const copyMetadata = async () =>
     Promise.all([
         fse.copy(
             path.resolve('clients/internal/metadata.json'),
-            path.resolve('dist/metadata.json')
+            path.resolve('dist/metadata.json'),
         ),
         fse.copy(
             path.resolve(__dirname, 'types/metadata.json.d.ts'),
-            path.resolve('dist/types/metadata.json.d.ts')
+            path.resolve('dist/types/metadata.json.d.ts'),
         ),
     ]);
 

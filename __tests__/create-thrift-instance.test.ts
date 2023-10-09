@@ -61,8 +61,8 @@ describe('createThriftInstance', () => {
                     'base',
                     'Rational',
                     value,
-                    i64SafeRangeCheck
-                )
+                    i64SafeRangeCheck,
+                ),
             ).toThrowError('Number is out of range');
             expect(errorSpy).toHaveBeenCalled();
 
@@ -81,7 +81,7 @@ describe('createThriftInstance', () => {
                 'base',
                 'Rational',
                 value,
-                i64SafeRangeCheck
+                i64SafeRangeCheck,
             );
 
             const expected = new Rational({
@@ -107,7 +107,7 @@ describe('createThriftInstance', () => {
                 'base',
                 'Rational',
                 value,
-                i64SafeRangeCheck
+                i64SafeRangeCheck,
             );
 
             const expected = new Rational({

@@ -8,7 +8,7 @@ import { ConnectOptions } from '__utilsPath__/types';
 export { CodegenClient as __exportName__CodegenClient } from './internal/__namespace__-__serviceName__';
 
 export const __exportName__ = async (
-    options: ConnectOptions
+    options: ConnectOptions,
 ): Promise<__exportName__CodegenClient> => {
     const serviceName = '__serviceName__';
     const namespace = '__namespace__';
@@ -30,8 +30,8 @@ export const __exportName__ = async (
             connectionContext,
             options.metadata,
             clientSettings,
-            context
+            context,
         ),
-        {} as __exportName__CodegenClient
+        {} as __exportName__CodegenClient,
     );
 };
