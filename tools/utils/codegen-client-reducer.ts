@@ -91,6 +91,7 @@ export const codegenClientReducer =
                             console.info(`🟢 ${namespace}.${serviceName}.${name}`, {
                                 args: objectArgs,
                                 response,
+                                headers
                             });
                         }
                         resolve(response);
@@ -105,6 +106,7 @@ export const codegenClientReducer =
                     console.error(`🔴 ${namespace}.${serviceName}.${name}`, {
                         args: objectArgs,
                         error,
+                        headers
                     });
                 }
                 throw error;
