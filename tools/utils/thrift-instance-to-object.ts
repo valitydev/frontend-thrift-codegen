@@ -22,7 +22,7 @@ export function thriftInstanceToObject(
     namespaceName: string,
     indefiniteType: ValueType,
     value: any,
-    include?: JsonAST['include']
+    include?: JsonAST['include'],
 ): any {
     if (typeof value !== 'object' || value === null || value === undefined) {
         return value;
@@ -37,17 +37,17 @@ export function thriftInstanceToObject(
                     Array.from(value as unknown as Map<any, any>).map(([k, v]) => [
                         internalThriftInstanceToObject(type.keyType, k, include),
                         internalThriftInstanceToObject(type.valueType, v, include),
-                    ])
+                    ]),
                 ) as unknown;
             case 'list':
                 return (value as unknown as any[]).map((v) =>
-                    internalThriftInstanceToObject(type.valueType, v, include)
+                    internalThriftInstanceToObject(type.valueType, v, include),
                 ) as unknown;
             case 'set':
                 return new Set(
                     Array.from(value as unknown as Set<any>).map((v) =>
-                        internalThriftInstanceToObject(type.valueType, v, include)
-                    )
+                        internalThriftInstanceToObject(type.valueType, v, include),
+                    ),
                 ) as unknown;
             default:
                 throw new Error('Unknown complex thrift type');
@@ -76,7 +76,7 @@ export function thriftInstanceToObject(
             return internalThriftInstanceToObject(
                 (typeMeta as TypedefType).type,
                 value,
-                objectInclude
+                objectInclude,
             );
         }
         case 'union': {
@@ -103,7 +103,7 @@ export function thriftInstanceToObject(
                     result[k] = internalThriftInstanceToObject(
                         fieldTypeMeta.type,
                         v,
-                        objectInclude
+                        objectInclude,
                     );
                 }
             }

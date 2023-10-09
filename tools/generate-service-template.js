@@ -5,12 +5,12 @@ const { generateTemplateFilesBatch } = require('generate-template-files');
 const prepareIndexFileContent = (config, typeExportNamespaces) => {
     const serviceExports = config.reduce(
         (acc, { exportName }) => acc.concat(`export * from './${exportName}';\n`),
-        ''
+        '',
     );
     return typeExportNamespaces.reduce(
         (acc, typeNamespace) =>
             acc.concat(`export * as ${typeNamespace} from './${typeNamespace}';\n`),
-        serviceExports
+        serviceExports,
     );
 };
 

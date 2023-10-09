@@ -19,8 +19,8 @@ async function execWithLog(cmd, cwd = process.cwd()) {
                     console.error(stderr);
                     rej(error);
                 }
-            }
-        )
+            },
+        ),
     );
 }
 
@@ -31,7 +31,7 @@ async function codegen(protoPath, depsPaths, outputPath) {
     await execWithLog(
         `thrift -r -gen js:node -o ${namedPath} ${depsPaths
             .map((dep) => `-I ${dep}`)
-            .join(' ')} ${protoPath}`
+            .join(' ')} ${protoPath}`,
     );
     const protos = fs
         .readdirSync(path.join(namedPath, 'gen-nodejs'))
@@ -46,7 +46,7 @@ async function codegen(protoPath, depsPaths, outputPath) {
             .join('\n')}
 
         export default {${protos.join(',')}}
-        `
+        `,
     );
 }
 
@@ -56,7 +56,7 @@ async function genModel(paths, outputPath) {
 
 async function genMetadata(paths, outputPath) {
     await execWithLog(
-        `thrift-ts ${paths.join(' ')} -o ${path.join(outputPath, 'metadata.json')} --json`
+        `thrift-ts ${paths.join(' ')} -o ${path.join(outputPath, 'metadata.json')} --json`,
     );
 }
 
@@ -82,8 +82,8 @@ async function compileProto(protoPaths, resultDist) {
     await execWithLog(
         `tsc ${path.join(DIST_PATH, '**/*.ts')} ${path.join(
             DIST_PATH,
-            '*.ts'
-        )} --skipLibCheck --target es2015 --lib es2021 --moduleResolution node --declaration`
+            '*.ts',
+        )} --skipLibCheck --target es2015 --lib es2021 --moduleResolution node --declaration`,
     );
 }
 

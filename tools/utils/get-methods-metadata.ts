@@ -4,7 +4,7 @@ import { ThriftAstMetadata } from './types';
 const getServiceMetadata = (
     metadata: ThriftAstMetadata[],
     namespace: string,
-    serviceName: string
+    serviceName: string,
 ): Service => {
     const namespaceMeta = metadata.find((m) => m.name === namespace);
     const servicesMeta = namespaceMeta?.ast?.service;
@@ -24,7 +24,7 @@ const toMethodsMetadata = (serviceMetadata: Service): Method[] =>
 export const getMethodsMetadata = (
     metadata: ThriftAstMetadata[],
     namespace: string,
-    serviceName: string
+    serviceName: string,
 ): Method[] => {
     const serviceMeta = getServiceMetadata(metadata, namespace, serviceName);
     return toMethodsMetadata(serviceMeta);

@@ -52,10 +52,10 @@ const build = () =>
                     stats.toString({
                         chunks: false,
                         colors: true,
-                    })
+                    }),
                 );
                 stats.hasErrors() ? reject('Build failed') : resolve();
-            }
+            },
         );
     });
 

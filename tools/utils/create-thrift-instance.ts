@@ -24,7 +24,7 @@ export function createThriftInstance<V>(
     indefiniteType: ValueType,
     value: any,
     i64SafeRangeCheck: boolean,
-    include?: JsonAST['include']
+    include?: JsonAST['include'],
 ): any {
     if (isThriftObject(value)) {
         return value;
@@ -38,7 +38,7 @@ export function createThriftInstance<V>(
             t,
             v,
             i64SafeRangeCheck,
-            include
+            include,
         );
     if (isComplexType(type)) {
         switch (type.name) {
@@ -47,15 +47,15 @@ export function createThriftInstance<V>(
                     Array.from(value as unknown as Map<any, any>).map(([k, v]) => [
                         internalCreateThriftInstance(type.keyType, k, include),
                         internalCreateThriftInstance(type.valueType, v, include),
-                    ])
+                    ]),
                 ) as unknown as V;
             case 'list':
                 return (value as unknown as any[]).map((v) =>
-                    internalCreateThriftInstance(type.valueType, v, include)
+                    internalCreateThriftInstance(type.valueType, v, include),
                 ) as unknown as V;
             case 'set':
                 return Array.from(value as unknown as Set<any>).map((v) =>
-                    internalCreateThriftInstance(type.valueType, v, include)
+                    internalCreateThriftInstance(type.valueType, v, include),
                 ) as unknown as V;
             default:
                 throw new Error('Unknown complex thrift type');
@@ -95,7 +95,7 @@ export function createThriftInstance<V>(
                     instance[k] = internalCreateThriftInstance(
                         fieldTypeMeta.type,
                         v as any,
-                        objectInclude
+                        objectInclude,
                     );
                 }
                 return instance;
@@ -109,7 +109,7 @@ export function createThriftInstance<V>(
                     '(meta type:',
                     typeMeta,
                     '), value:',
-                    value
+                    value,
                 );
                 throw error;
             }

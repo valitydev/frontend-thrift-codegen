@@ -31,7 +31,7 @@ const createArgInstances = (
     metadata: ThriftAstMetadata[],
     namespace: string,
     context: ThriftContext,
-    i64SafeRangeCheck: boolean
+    i64SafeRangeCheck: boolean,
 ) =>
     argObjects.map((argObj, id) => {
         const type = argsMetadata[id].type;
@@ -43,7 +43,7 @@ export const codegenClientReducer =
         { path, service, headers, deadlineConfig, hostname, port }: ConnectionContext,
         meta: ThriftAstMetadata[],
         { serviceName, namespace, logging, i64SafeRangeCheck }: ClientSettings,
-        context: ThriftContext
+        context: ThriftContext,
     ) =>
     (acc: T, { name, args, type }: Method) => ({
         ...acc,
@@ -57,7 +57,7 @@ export const codegenClientReducer =
                             meta,
                             namespace,
                             context,
-                            i64SafeRangeCheck
+                            i64SafeRangeCheck,
                         );
                         /**
                          * Connection errors come with HTTP errors (!= 200) and should be handled with errors from the service.
@@ -74,24 +74,24 @@ export const codegenClientReducer =
                             },
                             (err) => {
                                 reject(err);
-                            }
+                            },
                         ) as any;
                         const thriftResponse = await callThriftService(
                             connection,
                             name,
-                            thriftArgs
+                            thriftArgs,
                         );
                         const response = thriftInstanceToObject(
                             meta,
                             namespace,
                             type,
-                            thriftResponse
+                            thriftResponse,
                         );
                         if (logging) {
                             console.info(`🟢 ${namespace}.${serviceName}.${name}`, {
                                 args: objectArgs,
                                 response,
-                                headers
+                                headers,
                             });
                         }
                         resolve(response);
@@ -106,7 +106,7 @@ export const codegenClientReducer =
                     console.error(`🔴 ${namespace}.${serviceName}.${name}`, {
                         args: objectArgs,
                         error,
-                        headers
+                        headers,
                     });
                 }
                 throw error;
