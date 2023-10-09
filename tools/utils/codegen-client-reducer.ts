@@ -103,8 +103,8 @@ export const codegenClientReducer =
             } catch (error: any) {
                 if (logging) {
                     console.error(`🔴 ${namespace}.${serviceName}.${name}`, {
+                        args: objectArgs,
                         error,
-                        args,
                     });
                 }
                 throw error;
