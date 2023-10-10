@@ -65,7 +65,7 @@ export const codegenClientReducer =
                          */
                         const connection = connectClient(
                             hostname ?? location.hostname,
-                            port ?? (hostname ? undefined : location.port),
+                            port ?? (hostname ? '' : location.port),
                             path,
                             service,
                             {
