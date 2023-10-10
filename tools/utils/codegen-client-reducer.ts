@@ -45,14 +45,17 @@ export const codegenClientReducer = <T>(
     { serviceName, namespace, logging, i64SafeRangeCheck }: ClientSettings,
     context: ThriftContext,
 ) => {
-    if (hostname) {
-        port = port ?? '';
-        https = https ?? true;
-    } else {
-        hostname = location.hostname;
-        port = location.port;
-        https = location.protocol === 'https:';
-    }
+    const endpoint = hostname
+        ? {
+              hostname,
+              port: port ?? '',
+              https: https ?? true,
+          }
+        : {
+              hostname: location.hostname,
+              port: location.port,
+              https: location.protocol === 'https:',
+          };
     return (acc: T, { name, args, type }: Method) => ({
         ...acc,
         [name]: async (...objectArgs: object[]): Promise<object> => {
@@ -72,14 +75,14 @@ export const codegenClientReducer = <T>(
                          * You need to have 1 free connection per request. Otherwise, the error cannot be caught or identified.
                          */
                         const connection = connectClient(
-                            hostname,
-                            port,
+                            endpoint.hostname,
+                            endpoint.port,
                             path,
                             service,
                             {
                                 headers,
                                 deadlineConfig,
-                                https,
+                                https: endpoint.https,
                             },
                             (err) => {
                                 reject(err);

@@ -1,12 +1,12 @@
 {
   "name": "@vality/thrift-codegen",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "description": "",
   "scripts": {
     "prettier:check": "prettier \"**\" --list-different --ignore-unknown",
     "prettier:write": "prettier \"**\" --write --ignore-unknown",
     "codegen": "bin/index.js",
-    "test": "jest"
+    "test": "jest && ./bin/index.js --i ./__tests__ --n test"
   },
   "author": "Vality",
   "license": "Apache-2.0",
