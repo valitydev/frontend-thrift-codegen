@@ -20,6 +20,7 @@ export const __exportName__ = async (
         deadlineConfig: options.deadlineConfig,
         hostname: options.hostname,
         port: options.port,
+        https: options.https,
     };
     const clientSettings = {
         namespace,
