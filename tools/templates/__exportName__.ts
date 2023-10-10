@@ -18,6 +18,8 @@ export const __exportName__ = async (
         service,
         headers: options.headers,
         deadlineConfig: options.deadlineConfig,
+        hostname: options.hostname,
+        port: options.port,
     };
     const clientSettings = {
         namespace,

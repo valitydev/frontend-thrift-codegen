@@ -8,4 +8,6 @@ export interface ConnectOptions {
     deadlineConfig?: DeadlineConfig;
     logging?: boolean;
     i64SafeRangeCheck?: boolean;
+    hostname?: string;
+    port?: string;
 }
