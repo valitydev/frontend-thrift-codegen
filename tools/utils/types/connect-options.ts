@@ -10,4 +10,5 @@ export interface ConnectOptions {
     i64SafeRangeCheck?: boolean;
     hostname?: string;
     port?: string;
+    https?: boolean;
 }

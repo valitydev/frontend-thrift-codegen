@@ -16,6 +16,7 @@ export interface ConnectionContext {
     port?: string;
     headers?: KeyValue;
     deadlineConfig?: DeadlineConfig;
+    https?: boolean;
 }
 
 export interface ClientSettings {
@@ -38,14 +39,21 @@ const createArgInstances = (
         return createThriftInstance(metadata, context, namespace, type, argObj, i64SafeRangeCheck);
     });
 
-export const codegenClientReducer =
-    <T>(
-        { path, service, headers, deadlineConfig, hostname, port }: ConnectionContext,
-        meta: ThriftAstMetadata[],
-        { serviceName, namespace, logging, i64SafeRangeCheck }: ClientSettings,
-        context: ThriftContext,
-    ) =>
-    (acc: T, { name, args, type }: Method) => ({
+export const codegenClientReducer = <T>(
+    { path, service, headers, deadlineConfig, hostname, port, https }: ConnectionContext,
+    meta: ThriftAstMetadata[],
+    { serviceName, namespace, logging, i64SafeRangeCheck }: ClientSettings,
+    context: ThriftContext,
+) => {
+    if (hostname) {
+        port = port ?? '';
+        https = https ?? true;
+    } else {
+        hostname = location.hostname;
+        port = location.port;
+        https = location.protocol === 'https:';
+    }
+    return (acc: T, { name, args, type }: Method) => ({
         ...acc,
         [name]: async (...objectArgs: object[]): Promise<object> => {
             const thriftMethod = (): Promise<object> =>
@@ -64,13 +72,14 @@ export const codegenClientReducer =
                          * You need to have 1 free connection per request. Otherwise, the error cannot be caught or identified.
                          */
                         const connection = connectClient(
-                            hostname ?? location.hostname,
-                            port ?? (hostname ? '' : location.port),
+                            hostname,
+                            port,
                             path,
                             service,
                             {
                                 headers,
                                 deadlineConfig,
+                                https,
                             },
                             (err) => {
                                 reject(err);
@@ -113,3 +122,4 @@ export const codegenClientReducer =
             }
         },
     });
+};
