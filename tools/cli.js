@@ -9,6 +9,7 @@ const compileProto = require('./compile-proto');
 const generateServiceTemplate = require('./generate-service-template');
 const prepareGenerateServiceConfig = require('./prepare-generate-service-config');
 const build = require('./build');
+const compileLib = require('./build-lib');
 
 const rm = (path) =>
     new Promise((resolve, reject) => rimraf(path, (err) => (err ? reject(err) : resolve())));
@@ -16,6 +17,8 @@ const rm = (path) =>
 const clean = async () => {
     await rm(path.resolve('clients'));
     await rm(path.resolve('dist'));
+
+    await rm(path.resolve('dist-vite'));
 };
 
 const copyTypes = async () =>
@@ -48,6 +51,7 @@ const copyTsUtils = async () =>
 
 async function codegenClient() {
     const argv = yargs(hideBin(process.argv)).options({
+        // TODO look at strange example of using in repairer-proto (--i ./proto ./node_modules/@vality/domain-proto ./node_modules/@vality/fistful-proto/proto)
         inputs: {
             alias: 'i',
             demandOption: true,
@@ -68,7 +72,8 @@ async function codegenClient() {
     const serviceTemplateConfig = prepareGenerateServiceConfig(outputProtoPath, argv.namespaces);
     await generateServiceTemplate(serviceTemplateConfig, argv.namespaces, outputPath);
     await copyTsUtils();
-    await build();
+    // await build();
+    await compileLib();
     await copyMetadata();
     await copyTypes();
 }
