@@ -5,7 +5,7 @@ import * as service from './internal/__namespace__/gen-nodejs/__serviceName__';
 import { getMethodsMetadata, codegenClientReducer } from '__utilsPath__';
 import { ConnectOptions } from '__utilsPath__/types';
 
-export { CodegenClient as __exportName__CodegenClient } from './internal/__namespace__-__serviceName__';
+// export { CodegenClient as __exportName__CodegenClient } from './internal/__namespace__-__serviceName__';
 
 export const __exportName__ = async (
     options: ConnectOptions,

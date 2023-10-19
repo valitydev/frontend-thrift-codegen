@@ -3,3 +3,4 @@ proto
 dist
 clients
 tools/stub.d.ts
+dist-vite
