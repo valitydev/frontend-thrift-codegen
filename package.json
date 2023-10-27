@@ -1,6 +1,6 @@
 {
   "name": "@vality/thrift-codegen",
-  "version": "2.3.0",
+  "version": "2.3.1-alpha.0",
   "description": "",
   "scripts": {
     "prettier:check": "prettier \"**\" --list-different --ignore-unknown",
@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@vality/thrift-ts": "2.4.1-8ad5123.0",
-    "@vality/woody": "^0.1.1",
+    "@vality/woody": "0.1.2-alpha.3",
     "fs-extra": "^10.1.0",
     "generate-template-files": "^3.2.1",
     "glob": "^8.0.3",

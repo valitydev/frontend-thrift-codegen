@@ -1,9 +1,8 @@
 import { ArgOrExecption, Method } from '@vality/thrift-ts';
 import connectClient from '@vality/woody';
-import { DeadlineConfig, KeyValue } from '@vality/woody/src/connect-options';
 
 import { createThriftInstance } from './create-thrift-instance';
-import { ThriftAstMetadata, ThriftService } from './types';
+import { KeyValue, ThriftAstMetadata, ThriftService } from './types';
 import { callThriftService } from './call-thrift-service';
 import { thriftInstanceToObject } from './thrift-instance-to-object';
 
@@ -15,7 +14,6 @@ export interface ConnectionContext {
     hostname?: string;
     port?: string;
     headers?: KeyValue;
-    deadlineConfig?: DeadlineConfig;
     https?: boolean;
 }
 
@@ -40,7 +38,7 @@ const createArgInstances = (
     });
 
 export const codegenClientReducer = <T>(
-    { path, service, headers, deadlineConfig, hostname, port, https }: ConnectionContext,
+    { path, service, headers, hostname, port, https }: ConnectionContext,
     meta: ThriftAstMetadata[],
     { serviceName, namespace, logging, i64SafeRangeCheck }: ClientSettings,
     context: ThriftContext,
@@ -81,7 +79,6 @@ export const codegenClientReducer = <T>(
                             service,
                             {
                                 headers,
-                                deadlineConfig,
                                 https: endpoint.https,
                             },
                             (err) => {
