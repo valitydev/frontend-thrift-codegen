@@ -1,11 +1,13 @@
-import { DeadlineConfig, KeyValue } from '@vality/woody/src/connect-options';
 import { ThriftAstMetadata } from './thrift-ast-metadata';
+
+export interface KeyValue {
+    [key: string]: any;
+}
 
 export interface ConnectOptions {
     metadata: ThriftAstMetadata[];
     headers: KeyValue;
     path: string;
-    deadlineConfig?: DeadlineConfig;
     logging?: boolean;
     i64SafeRangeCheck?: boolean;
     hostname?: string;

@@ -29,7 +29,7 @@ const build = () =>
                 resolve: {
                     extensions: ['.ts', '.js'],
                     alias: {
-                        thrift: path.resolve('node_modules/@vality/woody/dist/thrift'),
+                        thrift: path.resolve(__dirname, 'thrift/gen.js'),
                     },
                 },
                 output: {

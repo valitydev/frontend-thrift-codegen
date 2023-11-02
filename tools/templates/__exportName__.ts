@@ -17,7 +17,6 @@ export const __exportName__ = async (
         path: options.path,
         service,
         headers: options.headers,
-        deadlineConfig: options.deadlineConfig,
         hostname: options.hostname,
         port: options.port,
         https: options.https,

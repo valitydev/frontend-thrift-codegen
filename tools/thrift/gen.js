@@ -1,0 +1,1 @@
+exports.Thrift = require('./thrift');
