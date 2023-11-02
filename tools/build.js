@@ -6,7 +6,7 @@ const build = () =>
         webpack(
             {
                 name: 'thrift-codegen',
-                mode: 'development',
+                mode: 'production',
                 entry: path.resolve('clients/index.ts'),
                 devtool: 'source-map',
                 module: {
@@ -41,6 +41,11 @@ const build = () =>
                         type: 'umd',
                     },
                 },
+                plugins: [
+                    new webpack.ProvidePlugin({
+                        Buffer: ['buffer', 'Buffer'],
+                    }),
+                ],
             },
             (err, stats) => {
                 if (err) {
