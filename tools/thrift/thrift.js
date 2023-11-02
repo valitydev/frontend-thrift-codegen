@@ -1,24 +1,28 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements. See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership. The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License. You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
-var util = require('util');
+function inherits(ctor, superCtor) {
+    if (ctor === undefined || ctor === null) {
+        throw new TypeError('The constructor to `inherits` must not be null or undefined.');
+    }
 
-var Type = exports.Type = {
+    if (superCtor === undefined || superCtor === null) {
+        throw new TypeError('The super constructor to `inherits` must not be null or undefined.');
+    }
+
+    if (superCtor.prototype === undefined) {
+        throw new TypeError('The super constructor to `inherits` must have a prototype.');
+    }
+
+    // Set up the prototype chain
+    ctor.prototype = Object.create(superCtor.prototype, {
+        constructor: {
+            value: ctor,
+            enumerable: false,
+            writable: true,
+            configurable: true,
+        },
+    });
+}
+
+var Type = (exports.Type = {
     STOP: 0,
     VOID: 1,
     BOOL: 2,
@@ -35,14 +39,14 @@ var Type = exports.Type = {
     SET: 14,
     LIST: 15,
     UTF8: 16,
-    UTF16: 17
-};
+    UTF16: 17,
+});
 
 exports.MessageType = {
     CALL: 1,
     REPLY: 2,
     EXCEPTION: 3,
-    ONEWAY: 4
+    ONEWAY: 4,
 };
 
 exports.TException = TException;
@@ -53,9 +57,9 @@ function TException(message) {
     this.name = this.constructor.name;
     this.message = message;
 }
-util.inherits(TException, Error);
+inherits(TException, Error);
 
-var TApplicationExceptionType = exports.TApplicationExceptionType = {
+var TApplicationExceptionType = (exports.TApplicationExceptionType = {
     UNKNOWN: 0,
     UNKNOWN_METHOD: 1,
     INVALID_MESSAGE_TYPE: 2,
@@ -66,8 +70,8 @@ var TApplicationExceptionType = exports.TApplicationExceptionType = {
     PROTOCOL_ERROR: 7,
     INVALID_TRANSFORM: 8,
     INVALID_PROTOCOL: 9,
-    UNSUPPORTED_CLIENT_TYPE: 10
-};
+    UNSUPPORTED_CLIENT_TYPE: 10,
+});
 
 exports.TApplicationException = TApplicationException;
 
@@ -78,15 +82,14 @@ function TApplicationException(type, message) {
     this.name = this.constructor.name;
     this.message = message;
 }
-util.inherits(TApplicationException, TException);
+inherits(TApplicationException, TException);
 
 TApplicationException.prototype.read = function (input) {
     var ret = input.readStructBegin('TApplicationException');
 
     while (1) {
         ret = input.readFieldBegin();
-        if (ret.ftype == Type.STOP)
-            break;
+        if (ret.ftype == Type.STOP) break;
 
         switch (ret.fid) {
             case 1:
@@ -142,20 +145,19 @@ function TProtocolException(type, message) {
     this.type = type;
     this.message = message;
 }
-util.inherits(TProtocolException, Error);
+inherits(TProtocolException, Error);
 
 exports.objectLength = function (obj) {
     return Object.keys(obj).length;
 };
 
 exports.inherits = function (constructor, superConstructor) {
-    util.inherits(constructor, superConstructor);
+    inherits(constructor, superConstructor);
 };
 
 var copyList, copyMap;
 
 copyList = function (lst, types) {
-
     if (!lst) {
         return lst;
     }
@@ -164,22 +166,22 @@ copyList = function (lst, types) {
 
     if (types.shift === undefined) {
         type = types;
-    }
-    else {
+    } else {
         type = types[0];
     }
     var Type = type;
 
-    var len = lst.length, result = [], i, val;
+    var len = lst.length,
+        result = [],
+        i,
+        val;
     for (i = 0; i < len; i++) {
         val = lst[i];
         if (type === null) {
             result.push(val);
-        }
-        else if (type === copyMap || type === copyList) {
+        } else if (type === copyMap || type === copyList) {
             result.push(type(val, types.slice(1)));
-        }
-        else {
+        } else {
             result.push(new Type(val));
         }
     }
@@ -187,7 +189,6 @@ copyList = function (lst, types) {
 };
 
 copyMap = function (obj, types) {
-
     if (!obj) {
         return obj;
     }
@@ -196,8 +197,7 @@ copyMap = function (obj, types) {
 
     if (types.shift === undefined) {
         type = types;
-    }
-    else {
+    } else {
         type = types[0];
     }
     var Type = type;
@@ -207,14 +207,12 @@ copyMap = function (obj, types) {
     obj.forEach((val, prop) => {
         if (type === null) {
             result.set(prop, val);
-        }
-        else if (type === copyMap || type === copyList) {
+        } else if (type === copyMap || type === copyList) {
             result.set(prop, type(val, types.slice(1)));
-        }
-        else {
+        } else {
             result.set(prop, new Type(val));
         }
-    })
+    });
     return result;
 };
 

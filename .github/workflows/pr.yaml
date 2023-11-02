@@ -9,12 +9,9 @@ jobs:
         steps:
             - uses: actions/checkout@v3
             - uses: valitydev/action-setup-thrift@v1.0.1
-            - uses: valitydev/action-frontend/setup@v0.1
+            - uses: valitydev/action-frontend/setup@v1
             - run: npm ci
             - name: Prettier check
               run: npm run prettier:check
             - name: Run tests
               run: npm run test
-            - uses: valitydev/action-frontend/publish@v0.1
-              with:
-                  npm-token: ${{ secrets.NPM_TOKEN }}
