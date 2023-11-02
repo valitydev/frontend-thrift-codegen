@@ -41,6 +41,11 @@ const build = () =>
                         type: 'umd',
                     },
                 },
+                plugins: [
+                    new webpack.ProvidePlugin({
+                        Buffer: ['buffer', 'Buffer'],
+                    }),
+                ],
             },
             (err, stats) => {
                 if (err) {
