@@ -6,7 +6,7 @@ const build = () =>
         webpack(
             {
                 name: 'thrift-codegen',
-                mode: 'production',
+                mode: 'development',
                 entry: path.resolve('clients/index.ts'),
                 devtool: 'source-map',
                 module: {
