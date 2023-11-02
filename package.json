@@ -23,7 +23,7 @@
     "base-x": "4.0.0",
     "buffer": "6.0.3",
     "flake-idgen": "1.4.0",
-    "fs-extra": "^10.1.0",
+    "fs-extra": "^11.0.0",
     "generate-template-files": "^3.2.1",
     "glob": "^8.0.3",
     "rimraf": "^3.0.2",
