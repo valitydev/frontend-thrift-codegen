@@ -34,7 +34,7 @@
     "yargs": "17.3.1"
   },
   "devDependencies": {
-    "@types/base-x": "3.0.6",
+    "@types/base-x": "3.0.10",
     "@types/flake-idgen": "0.1.33",
     "@types/jest": "29.5.0",
     "html-webpack-plugin": "5.5.3",
