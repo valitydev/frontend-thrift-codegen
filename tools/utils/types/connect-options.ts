@@ -7,10 +7,10 @@ export interface KeyValue {
 export interface ConnectOptions {
     metadata: ThriftAstMetadata[];
     headers: KeyValue;
-    path: string;
     logging?: boolean;
     i64SafeRangeCheck?: boolean;
     hostname?: string;
     port?: string;
     https?: boolean;
+    path?: string;
 }

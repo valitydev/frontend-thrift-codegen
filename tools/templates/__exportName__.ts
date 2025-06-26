@@ -16,7 +16,7 @@ export const __exportName__ = async (
     const namespace = '__namespace__';
     const methodsMeta = getMethodsMetadata(options.metadata, namespace, serviceName);
     const connectionContext = {
-        path: options.path,
+        path: options.path ?? '/',
         service,
         headers: options.headers,
         hostname: options.hostname,
