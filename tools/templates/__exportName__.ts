@@ -1,3 +1,5 @@
+import { Observable, shareReplay, switchMap } from 'rxjs';
+
 import { CodegenClient as __exportName__CodegenClient } from './internal/__namespace__-__serviceName__';
 import context from './internal/__namespace__/context';
 import * as service from './internal/__namespace__/gen-nodejs/__serviceName__';
@@ -37,3 +39,16 @@ export const __exportName__ = async (
         {} as __exportName__CodegenClient,
     );
 };
+
+export class __exportName__(pascalCase)Service {
+    protected client$: Observable<__exportName__CodegenClient>;
+
+    constructor(connectOptions$: Observable<ConnectOptions>) {
+        this.client$ = connectOptions$.pipe(
+            switchMap((params) => __exportName__(params)),
+            shareReplay({refCount: true, bufferSize: 1}),
+        );
+    }
+
+    __methods__
+}

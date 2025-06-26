@@ -12,4 +12,4 @@ const flake = new FlakeId();
  *
  * @returns {string} - The base64-encoded unique ID.
  */
-export const generateId = (): string => bs64.encode(flake.next());
+export const generateId = (): string => bs64.encode(flake.next() as unknown as Uint8Array);

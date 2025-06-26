@@ -4,11 +4,11 @@ const path = require('path');
 const rimraf = require('rimraf');
 const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
+const { build } = require('tsup');
 
 const compileProto = require('./compile-proto');
 const generateServiceTemplate = require('./generate-service-template');
 const prepareGenerateServiceConfig = require('./prepare-generate-service-config');
-const build = require('./build');
 
 const rm = (path) =>
     new Promise((resolve, reject) => rimraf(path, (err) => (err ? reject(err) : resolve())));
@@ -18,30 +18,12 @@ const clean = async () => {
     await rm(path.resolve('dist'));
 };
 
-const copyTypes = async () =>
-    new Promise((resolve, reject) => {
-        glob(path.resolve('clients/**/*.d.ts'), (err, files) => {
-            if (err) reject(err);
-            for (const file of files) {
-                const parsed = path.parse(file);
-                const output = parsed.dir.replace(path.resolve('clients'), '');
-                fse.copySync(file, path.resolve(`dist/types/${output}/${parsed.base}`));
-                resolve();
-            }
-        });
-    });
-
-const copyMetadata = async () =>
-    Promise.all([
-        fse.copy(
-            path.resolve('clients/internal/metadata.json'),
-            path.resolve('dist/metadata.json'),
-        ),
-        fse.copy(
-            path.resolve(__dirname, 'types/metadata.json.d.ts'),
-            path.resolve('dist/types/metadata.json.d.ts'),
-        ),
-    ]);
+const copyMetadata = async () => {
+    const metadataJsonPath = path.resolve('clients/internal/metadata.json');
+    const metadataTsPath = path.resolve('clients/internal/metadata.ts');
+    const content = await fse.readFile(metadataJsonPath, 'utf-8');
+    await fse.outputFile(metadataTsPath, `export const metadata: any[] = ${content}\n`);
+};
 
 const copyTsUtils = async () =>
     fse.copy(path.resolve(__dirname, 'utils'), path.resolve('clients/utils'));
@@ -66,11 +48,18 @@ async function codegenClient() {
     const outputProtoPath = `${outputPath}/internal`;
     await compileProto(argv.inputs, outputProtoPath);
     const serviceTemplateConfig = prepareGenerateServiceConfig(outputProtoPath, argv.namespaces);
-    await generateServiceTemplate(serviceTemplateConfig, argv.namespaces, outputPath);
+    const metadata = JSON.parse(
+        await fse.readFile(path.resolve(outputProtoPath, 'metadata.json'), 'utf-8'),
+    );
+    await generateServiceTemplate(serviceTemplateConfig, argv.namespaces, outputPath, metadata);
     await copyTsUtils();
-    await build();
     await copyMetadata();
-    await copyTypes();
+    await build({
+        entry: [path.resolve(path.join(outputPath, 'index.ts'))],
+        sourcemap: true,
+        dts: true,
+        minify: true,
+    });
 }
 
 module.exports = codegenClient;

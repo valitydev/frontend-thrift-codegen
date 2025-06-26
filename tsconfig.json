@@ -2,6 +2,9 @@
     "compilerOptions": {
         "target": "es6",
         "module": "commonjs",
-        "esModuleInterop": true
+        "esModuleInterop": true,
+        "paths": {
+            "thrift": ["./tools/thrift/thrift.js"]
+        }
     }
 }
