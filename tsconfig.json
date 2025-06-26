@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
-        "target": "es6",
-        "module": "commonjs",
+        "target": "ES2022",
+        "module": "preserve",
         "esModuleInterop": true,
         "paths": {
             "thrift": ["./tools/thrift/thrift.js"]
