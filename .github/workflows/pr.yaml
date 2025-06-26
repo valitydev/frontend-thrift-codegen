@@ -7,10 +7,9 @@ jobs:
         name: Check
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v3
-            - uses: valitydev/action-setup-thrift@v1.0.1
-            - uses: valitydev/action-frontend/setup@v1
-            - run: npm ci
+            - uses: actions/checkout@v4
+            - uses: valitydev/action-setup-thrift@v1
+            - uses: valitydev/action-frontend/setup-install@v2
             - name: Prettier check
               run: npm run prettier:check
             - name: Run tests
