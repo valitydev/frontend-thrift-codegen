@@ -11,7 +11,7 @@ const prepareGenerateServiceConfig = require('./prepare-generate-service-config'
 
 const clean = () => shelljs.rm('-rf', path.resolve('clients'), path.resolve('dist'));
 
-const copyMetadata = async () => {
+const copyMetadataAsTsFile = async () => {
     const metadataJsonPath = path.resolve('clients/internal/metadata.json');
     const metadataTsPath = path.resolve('clients/internal/metadata.ts');
     const content = await fse.readFile(metadataJsonPath, 'utf-8');
@@ -46,7 +46,7 @@ async function codegenClient() {
     );
     await generateServiceTemplate(serviceTemplateConfig, argv.namespaces, outputPath, metadata);
     await copyTsUtils();
-    await copyMetadata();
+    await copyMetadataAsTsFile();
     await build({
         entry: [path.resolve(path.join(outputPath, 'index.ts'))],
         sourcemap: true,
