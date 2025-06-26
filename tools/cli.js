@@ -58,6 +58,7 @@ async function codegenClient() {
         sourcemap: true,
         dts: true,
         minify: true,
+        tsconfig: path.resolve(__dirname, '../tsconfig.json'),
     });
 }
 
