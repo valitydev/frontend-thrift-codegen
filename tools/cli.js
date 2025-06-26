@@ -1,7 +1,6 @@
 const fse = require('fs-extra');
-const glob = require('glob');
 const path = require('path');
-const rimraf = require('rimraf');
+const shelljs = require('shelljs');
 const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
 const { build } = require('tsup');
@@ -10,13 +9,7 @@ const compileProto = require('./compile-proto');
 const generateServiceTemplate = require('./generate-service-template');
 const prepareGenerateServiceConfig = require('./prepare-generate-service-config');
 
-const rm = (path) =>
-    new Promise((resolve, reject) => rimraf(path, (err) => (err ? reject(err) : resolve())));
-
-const clean = async () => {
-    await rm(path.resolve('clients'));
-    await rm(path.resolve('dist'));
-};
+const clean = () => shelljs.rm('-rf', path.resolve('clients'), path.resolve('dist'));
 
 const copyMetadata = async () => {
     const metadataJsonPath = path.resolve('clients/internal/metadata.json');
@@ -43,7 +36,7 @@ async function codegenClient() {
             description: 'List of service namespaces which will be included.',
         },
     }).argv;
-    await clean();
+    clean();
     const outputPath = './clients';
     const outputProtoPath = `${outputPath}/internal`;
     await compileProto(argv.inputs, outputProtoPath);

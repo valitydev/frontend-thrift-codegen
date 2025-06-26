@@ -63,7 +63,7 @@ describe('createThriftInstance', () => {
                     value,
                     i64SafeRangeCheck,
                 ),
-            ).toThrowError('Number is out of range');
+            ).toThrow('Number is out of range');
             expect(errorSpy).toHaveBeenCalled();
 
             errorSpy.mockRestore();
