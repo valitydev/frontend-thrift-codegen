@@ -22,8 +22,7 @@ const copyMetadataAsTsFile = async (outputProtoPath, metadataName) => {
     );
 };
 
-const copyTsUtils = async () =>
-    fse.copy(path.resolve(__dirname, 'utils'), path.resolve('clients/utils'));
+const copyStaticFiles = async () => fse.copy(path.resolve(__dirname, 'static'), 'clients');
 
 async function codegenClient() {
     const outputPath = './clients';
@@ -51,7 +50,7 @@ async function codegenClient() {
         await fse.readFile(path.resolve(outputProtoPath, 'metadata.json'), 'utf-8'),
     );
     await generateServiceTemplate(serviceTemplateConfig, argv.namespaces, outputPath, metadata);
-    await copyTsUtils();
+    await copyStaticFiles();
     await copyMetadataAsTsFile(outputProtoPath, metadataName);
     await build({
         entry: [path.resolve(path.join(outputPath, 'index.ts'))],
