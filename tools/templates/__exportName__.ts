@@ -1,3 +1,7 @@
+import { Observable, shareReplay, switchMap, firstValueFrom } from 'rxjs';
+
+import { metadata$ } from './metadata';
+
 import { CodegenClient as __exportName__CodegenClient } from './internal/__namespace__-__serviceName__';
 import context from './internal/__namespace__/context';
 import * as service from './internal/__namespace__/gen-nodejs/__serviceName__';
@@ -10,11 +14,12 @@ export { CodegenClient as __exportName__CodegenClient } from './internal/__names
 export const __exportName__ = async (
     options: ConnectOptions,
 ): Promise<__exportName__CodegenClient> => {
+    const metadata = await firstValueFrom(metadata$);
     const serviceName = '__serviceName__';
     const namespace = '__namespace__';
-    const methodsMeta = getMethodsMetadata(options.metadata, namespace, serviceName);
+    const methodsMeta = getMethodsMetadata(metadata, namespace, serviceName);
     const connectionContext = {
-        path: options.path,
+        path: options.path ?? '/',
         service,
         headers: options.headers,
         hostname: options.hostname,
@@ -25,15 +30,34 @@ export const __exportName__ = async (
         namespace,
         serviceName,
         logging: options.logging || false,
+        loggingFn: options.loggingFn,
         i64SafeRangeCheck: options.i64SafeRangeCheck || true,
+        timeout: options.timeout || 60_000,
     };
     return methodsMeta.reduce(
         codegenClientReducer<__exportName__CodegenClient>(
             connectionContext,
-            options.metadata,
+            metadata,
             clientSettings,
             context,
         ),
         {} as __exportName__CodegenClient,
     );
 };
+
+/**
+ * __serviceName__
+ * Namespace: __namespace__
+ */
+export class __serviceName__ {
+    protected client$: Observable<__exportName__CodegenClient>;
+
+    constructor(connectOptions$: Observable<ConnectOptions>) {
+        this.client$ = connectOptions$.pipe(
+            switchMap((params) => __exportName__(params)),
+            shareReplay({refCount: true, bufferSize: 1}),
+        );
+    }
+
+    __methods__
+}

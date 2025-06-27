@@ -1,5 +1,5 @@
 import Int64 from '@vality/thrift-ts/lib/int64';
-import { thriftInstanceToObject } from '../tools/utils/thrift-instance-to-object';
+import { thriftInstanceToObject } from '../tools/static/utils/thrift-instance-to-object';
 
 describe('thriftInstanceToObject', () => {
     const metadata = [

@@ -1,5 +1,5 @@
 import Int64 from '@vality/thrift-ts/lib/int64';
-import { createThriftInstance } from '../tools/utils/create-thrift-instance';
+import { createThriftInstance } from '../tools/static/utils/create-thrift-instance';
 
 describe('createThriftInstance', () => {
     // Codegen Rational mock. Copied from result of codegeneration.
@@ -63,7 +63,7 @@ describe('createThriftInstance', () => {
                     value,
                     i64SafeRangeCheck,
                 ),
-            ).toThrowError('Number is out of range');
+            ).toThrow('Number is out of range');
             expect(errorSpy).toHaveBeenCalled();
 
             errorSpy.mockRestore();

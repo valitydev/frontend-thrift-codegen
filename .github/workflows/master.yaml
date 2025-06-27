@@ -9,9 +9,8 @@ jobs:
         name: Publish
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v3
-            - uses: valitydev/action-frontend/setup@v1
-            - run: npm ci
+            - uses: actions/checkout@v4
+            - uses: valitydev/action-frontend/setup-install@v2
             - uses: valitydev/action-frontend/publish@v1
               with:
                   npm-token: ${{ secrets.NPM_TOKEN }}

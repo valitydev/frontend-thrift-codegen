@@ -1,7 +1,8 @@
 {
     "compilerOptions": {
-        "target": "es6",
-        "module": "commonjs",
-        "esModuleInterop": true
+        "target": "ES2022",
+        "module": "preserve",
+        "esModuleInterop": true,
+        "removeComments": false
     }
 }

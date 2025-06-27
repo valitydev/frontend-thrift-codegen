@@ -79,12 +79,6 @@ async function compileProto(protoPaths, resultDist) {
         genModel([PROTO_PATH, ...DEPS_PATHS], DIST_PATH),
         genMetadata([PROTO_PATH, ...DEPS_PATHS], DIST_PATH),
     ]);
-    await execWithLog(
-        `tsc ${path.join(DIST_PATH, '**/*.ts')} ${path.join(
-            DIST_PATH,
-            '*.ts',
-        )} --skipLibCheck --target es2015 --lib es2021 --moduleResolution node --declaration`,
-    );
 }
 
 module.exports = compileProto;

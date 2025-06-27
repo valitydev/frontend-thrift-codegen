@@ -1,4 +1,4 @@
-import { generateId } from '../tools/utils/generate-id';
+import { generateId } from '../tools/static/utils/generate-id';
 
 describe('generateId function', () => {
     it('should return a string', () => {
