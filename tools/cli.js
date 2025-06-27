@@ -63,6 +63,11 @@ async function codegenClient() {
         dts: true,
         minify: true,
         tsconfig: path.resolve(__dirname, '../tsconfig.json'),
+        esbuildOptions(options) {
+            options.alias = {
+                thrift: path.resolve(__dirname, 'thrift/thrift.js'),
+            };
+        },
     });
 }
 
