@@ -4,23 +4,23 @@ This project allows generation of JS client library, typings and json metadata a
 
 ## Usage
 
-```
+```sh
 thrift-codegen [options]
 ```
 
 Options:
 
-```
-  -i, --inputs      List of thrift file folders for compilation. [array] [required]
-  -n, --namespaces  List of service namespaces which will be included. [array] [required]
-```
+- `-i, --inputs` - List of thrift file folders for compilation. [array] [required]
+- `-n, --namespaces` - List of service namespaces which will be included. [array] [required]
 
 ## Testing
 
--   Copy thrift spec to `proto` directory. For example [damsel](https://github.com/valitydev/damsel).
+- Copy thrift spec to `proto` directory. For example [damsel](https://github.com/valitydev/damsel).
 
--   Run
+- Run
 
-        npm run codegen -- --i ./proto --n domain_config
+```sh
+npm run codegen -- --i ./proto --n domain_config
+```
 
--   Codegen client will be available in `dist` directory.
+- Codegen client will be available in `dist` directory.
