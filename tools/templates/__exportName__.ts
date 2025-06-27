@@ -30,6 +30,7 @@ export const __exportName__ = async (
         namespace,
         serviceName,
         logging: options.logging || false,
+        loggingFn: options.loggingFn,
         i64SafeRangeCheck: options.i64SafeRangeCheck || true,
     };
     return methodsMeta.reduce(

@@ -2,7 +2,7 @@ import { ArgOrExecption, Method } from '@vality/thrift-ts';
 import connectClient from '@vality/woody';
 
 import { createThriftInstance } from './create-thrift-instance';
-import { KeyValue, ThriftAstMetadata, ThriftService } from './types';
+import { KeyValue, LogFn, ThriftAstMetadata, ThriftService } from './types';
 import { callThriftService } from './call-thrift-service';
 import { thriftInstanceToObject } from './thrift-instance-to-object';
 
@@ -21,6 +21,7 @@ export interface ClientSettings {
     serviceName: string;
     namespace: string;
     logging: boolean;
+    loggingFn?: LogFn;
     i64SafeRangeCheck: boolean;
 }
 
@@ -37,10 +38,37 @@ const createArgInstances = (
         return createThriftInstance(metadata, context, namespace, type, argObj, i64SafeRangeCheck);
     });
 
+const defaultLogFn: LogFn = ({
+    type,
+    namespace,
+    serviceName,
+    name,
+    args,
+    response,
+    error,
+    headers,
+}) => {
+    switch (type) {
+        case 'success':
+            console.info(`🟢 ${namespace}.${serviceName}.${name}`, {
+                args,
+                response,
+                headers,
+            });
+            return;
+        case 'error':
+            console.error(`🔴 ${namespace}.${serviceName}.${name}`, {
+                args,
+                error,
+                headers,
+            });
+    }
+};
+
 export const codegenClientReducer = <T>(
     { path, service, headers, hostname, port, https }: ConnectionContext,
     meta: ThriftAstMetadata[],
-    { serviceName, namespace, logging, i64SafeRangeCheck }: ClientSettings,
+    { serviceName, namespace, logging, loggingFn, i64SafeRangeCheck }: ClientSettings,
     context: ThriftContext,
 ) => {
     const endpoint = hostname
@@ -54,10 +82,11 @@ export const codegenClientReducer = <T>(
               port: location.port,
               https: location.protocol === 'https:',
           };
+    const logFn = loggingFn || defaultLogFn;
     return (acc: T, { name, args, type }: Method) => ({
         ...acc,
-        [name]: async (...objectArgs: object[]): Promise<object> => {
-            const thriftMethod = (): Promise<object> =>
+        [name]: async (...objectArgs: object[]): Promise<T> => {
+            const thriftMethod = (): Promise<T> =>
                 new Promise(async (resolve, reject) => {
                     try {
                         const thriftArgs = createArgInstances(
@@ -85,6 +114,14 @@ export const codegenClientReducer = <T>(
                                 reject(err);
                             },
                         ) as any;
+                        logFn({
+                            namespace,
+                            serviceName,
+                            name,
+                            args: objectArgs,
+                            headers,
+                            type: 'call',
+                        });
                         const thriftResponse = await callThriftService(
                             connection,
                             name,
@@ -96,11 +133,15 @@ export const codegenClientReducer = <T>(
                             type,
                             thriftResponse,
                         );
-                        if (logging) {
-                            console.info(`🟢 ${namespace}.${serviceName}.${name}`, {
+                        if (logging || loggingFn) {
+                            logFn({
+                                namespace,
+                                serviceName,
+                                name,
                                 args: objectArgs,
                                 response,
                                 headers,
+                                type: 'success',
                             });
                         }
                         resolve(response);
@@ -111,11 +152,15 @@ export const codegenClientReducer = <T>(
             try {
                 return await thriftMethod();
             } catch (error: any) {
-                if (logging) {
-                    console.error(`🔴 ${namespace}.${serviceName}.${name}`, {
+                if (logging || loggingFn) {
+                    logFn({
+                        namespace,
+                        serviceName,
+                        name,
                         args: objectArgs,
                         error,
                         headers,
+                        type: 'error',
                     });
                 }
                 throw error;
