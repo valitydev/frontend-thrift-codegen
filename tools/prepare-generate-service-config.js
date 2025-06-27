@@ -12,7 +12,7 @@ const prepareGenerateServiceConfig = (compiledDist, includedNamespaces) =>
     fs
         .readdirSync(compiledDist)
         .map((filePath) => path.parse(filePath))
-        .filter(({ ext, name }) => ext === '.js' && name.includes('-'))
+        .filter(({ ext, name }) => ext === '.ts' && name.includes('-'))
         .map(({ name }) => {
             const [namespace, serviceName] = name.split('-');
             return {

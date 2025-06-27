@@ -49,6 +49,7 @@ async function codegenClient() {
     const metadata = JSON.parse(
         await fse.readFile(path.resolve(outputProtoPath, 'metadata.json'), 'utf-8'),
     );
+
     await generateServiceTemplate(serviceTemplateConfig, argv.namespaces, outputPath, metadata);
     await copyStaticFiles();
     await copyMetadataAsTsFile(outputProtoPath, metadataName);
