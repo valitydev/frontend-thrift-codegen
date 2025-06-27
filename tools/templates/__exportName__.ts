@@ -1,6 +1,6 @@
-import { Observable, shareReplay, switchMap } from 'rxjs';
+import { Observable, shareReplay, switchMap, firstValueFrom } from 'rxjs';
 
-import { getMetadata } from './metadata';
+import { metadata$ } from './metadata';
 
 import { CodegenClient as __exportName__CodegenClient } from './internal/__namespace__-__serviceName__';
 import context from './internal/__namespace__/context';
@@ -14,7 +14,7 @@ export { CodegenClient as __exportName__CodegenClient } from './internal/__names
 export const __exportName__ = async (
     options: ConnectOptions,
 ): Promise<__exportName__CodegenClient> => {
-    const metadata = await getMetadata();
+    const metadata = await firstValueFrom(metadata$);
     const serviceName = '__serviceName__';
     const namespace = '__namespace__';
     const methodsMeta = getMethodsMetadata(metadata, namespace, serviceName);
