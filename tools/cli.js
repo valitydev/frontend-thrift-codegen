@@ -61,11 +61,12 @@ async function codegenClient() {
         ],
         sourcemap: true,
         dts: true,
-        minify: true,
+        format: ['esm', 'cjs'],
+        platform: 'browser',
         tsconfig: path.resolve(__dirname, '../tsconfig.json'),
         esbuildOptions(options) {
             options.alias = {
-                thrift: path.resolve(__dirname, 'thrift/thrift.js'),
+                thrift: path.resolve(__dirname, 'thrift/gen.js'),
             };
         },
     });
