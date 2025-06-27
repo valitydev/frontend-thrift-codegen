@@ -22,4 +22,5 @@ export interface ConnectOptions {
     port?: string;
     https?: boolean;
     path?: string;
+    timeout?: number; // ms
 }

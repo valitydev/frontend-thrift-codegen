@@ -23,6 +23,7 @@ export interface ClientSettings {
     logging: boolean;
     loggingFn?: LogFn;
     i64SafeRangeCheck: boolean;
+    timeout: number;
 }
 
 const createArgInstances = (
@@ -68,7 +69,7 @@ const defaultLogFn: LogFn = ({
 export const codegenClientReducer = <T>(
     { path, service, headers, hostname, port, https }: ConnectionContext,
     meta: ThriftAstMetadata[],
-    { serviceName, namespace, logging, loggingFn, i64SafeRangeCheck }: ClientSettings,
+    { serviceName, namespace, logging, loggingFn, i64SafeRangeCheck, timeout }: ClientSettings,
     context: ThriftContext,
 ) => {
     const endpoint = hostname
@@ -126,6 +127,7 @@ export const codegenClientReducer = <T>(
                             connection,
                             name,
                             thriftArgs,
+                            timeout,
                         );
                         const response = thriftInstanceToObject(
                             meta,

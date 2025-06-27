@@ -32,6 +32,7 @@ export const __exportName__ = async (
         logging: options.logging || false,
         loggingFn: options.loggingFn,
         i64SafeRangeCheck: options.i64SafeRangeCheck || true,
+        timeout: options.timeout || 60_000,
     };
     return methodsMeta.reduce(
         codegenClientReducer<__exportName__CodegenClient>(
