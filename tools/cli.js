@@ -52,8 +52,12 @@ async function codegenClient() {
     await generateServiceTemplate(serviceTemplateConfig, argv.namespaces, outputPath, metadata);
     await copyStaticFiles();
     await copyMetadataAsTsFile(outputProtoPath, metadataName);
+
     await build({
-        entry: [path.resolve(path.join(outputPath, 'index.ts'))],
+        entry: [
+            path.resolve(path.join(outputPath, 'index.ts')),
+            ...argv.namespaces.map((ns) => path.resolve(path.join(outputPath, `${ns}.ts`))),
+        ],
         sourcemap: true,
         dts: true,
         minify: true,

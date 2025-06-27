@@ -3,6 +3,7 @@
         "target": "ES2022",
         "module": "preserve",
         "esModuleInterop": true,
+        "removeComments": false,
         "paths": {
             "thrift": ["./tools/thrift/thrift.js"]
         }

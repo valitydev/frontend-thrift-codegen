@@ -2,18 +2,6 @@ const path = require('path');
 
 const { generateTemplateFilesBatch } = require('generate-template-files');
 
-const prepareIndexFileContent = (config, typeExportNamespaces) => {
-    const serviceExports = config.reduce(
-        (acc, { exportName }) => acc.concat(`export * from './${exportName}';\n`),
-        '',
-    );
-    return typeExportNamespaces.reduce(
-        (acc, typeNamespace) =>
-            acc.concat(`export * as ${typeNamespace} from './${typeNamespace}';\n`),
-        serviceExports,
-    );
-};
-
 const generateServiceTemplate = async (config, typeExportNamespaces, outputPath, metadata) => {
     await generateTemplateFilesBatch([
         ...config.map(({ serviceName, namespace, exportName }) => {
@@ -37,11 +25,30 @@ const generateServiceTemplate = async (config, typeExportNamespaces, outputPath,
                         slotValue: Object.values(methods)
                             .map(
                                 (fun) =>
+                                    `/**\n` +
+                                    [
+                                        fun.name,
+                                        ...[
+                                            ...fun.throws.map(
+                                                (t) =>
+                                                    `{ThriftServiceError} ${
+                                                        typeof t.type === 'object'
+                                                            ? JSON.stringify(t.type)
+                                                            : String(t.type)
+                                                    }`,
+                                            ),
+                                            '{ThriftServiceTimeoutError}',
+                                            '{ThriftServiceNotFoundError}',
+                                        ].map((d) => `@throws ${d}`),
+                                    ]
+                                        .map((v) => `* ${v}`)
+                                        .join('\n') +
+                                    '\n*/\n' +
                                     `${fun.name}(...params: Parameters<${exportName}CodegenClient['${fun.name}']>) {` +
                                     ` return this.client$.pipe(switchMap((c) => c.${fun.name}(...params))); ` +
                                     `}`,
                             )
-                            .join('\n'),
+                            .join('\n\n'),
                     },
                 ],
                 output: {
@@ -57,31 +64,22 @@ const generateServiceTemplate = async (config, typeExportNamespaces, outputPath,
             entry: {
                 folderPath: path.resolve(__dirname, 'templates/__typesNamespace__.ts'),
             },
-            dynamicReplacers: [{ slot: '__typesNamespace__', slotValue: typesNamespace }],
+            dynamicReplacers: [
+                { slot: '__typesNamespace__', slotValue: typesNamespace },
+                {
+                    slot: '__exports__',
+                    slotValue: config
+                        .filter((c) => c.namespace === typesNamespace)
+                        .map((v) => `export {${v.serviceName}} from './${v.exportName}';`)
+                        .join('\n'),
+                },
+            ],
             output: {
                 path: `${outputPath}/__typesNamespace__.ts`,
                 pathAndFileNameDefaultCase: '(noCase)',
                 overwrite: true,
             },
         })),
-        {
-            option: 'Create index file with exports',
-            defaultCase: '(noCase)',
-            entry: {
-                folderPath: path.resolve(__dirname, 'templates/index.ts'),
-            },
-            dynamicReplacers: [
-                {
-                    slot: '__export__',
-                    slotValue: prepareIndexFileContent(config, typeExportNamespaces),
-                },
-            ],
-            output: {
-                path: `${outputPath}/index.ts`,
-                pathAndFileNameDefaultCase: '(noCase)',
-                overwrite: true,
-            },
-        },
     ]);
 };
 

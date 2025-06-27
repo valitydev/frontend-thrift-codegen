@@ -124,8 +124,14 @@ export const codegenClientReducer = <T>(
                             type: 'call',
                         });
                         const thriftResponse = await callThriftService(
+                            {
+                                namespace,
+                                serviceName,
+                                name,
+                                args: objectArgs,
+                                headers,
+                            },
                             connection,
-                            name,
                             thriftArgs,
                             timeout,
                         );

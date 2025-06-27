@@ -45,7 +45,11 @@ export const __exportName__ = async (
     );
 };
 
-export class __exportName__(pascalCase)Service {
+/**
+ * __serviceName__
+ * Namespace: __namespace__
+ */
+export class __serviceName__ {
     protected client$: Observable<__exportName__CodegenClient>;
 
     constructor(connectOptions$: Observable<ConnectOptions>) {
