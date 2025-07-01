@@ -11,6 +11,6 @@ jobs:
         steps:
             - uses: actions/checkout@v4
             - uses: valitydev/action-frontend/setup-install@v2
-            - uses: valitydev/action-frontend/publish@v1
+            - uses: valitydev/action-frontend/publish@v2
               with:
                   npm-token: ${{ secrets.NPM_TOKEN }}
