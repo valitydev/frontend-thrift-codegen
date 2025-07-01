@@ -1,6 +1,6 @@
 {
   "name": "@vality/thrift-codegen",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "",
   "scripts": {
     "prettier:check": "prettier \"**\" --list-different --ignore-unknown",
@@ -18,7 +18,7 @@
     "thrift-codegen": "bin/index.js"
   },
   "dependencies": {
-    "@vality/thrift-ts": "2.4.1-8ad5123.0",
+    "@vality/thrift-ts": "2.5.1-2b658f2.0",
     "@vality/woody": "0.1.3",
     "base-x": "5.0.1",
     "buffer": "6.0.3",

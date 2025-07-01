@@ -1,13 +1,20 @@
-enum B {
+include "dep/dep.thrift"
+
+enum TestEnum {
     a
     b
 }
 
-struct A {
-    1: optional B b
+struct TestStruct {
+    1: optional TestEnum enumValue
+    2: optional dep.Dep depValue
 }
 
-service Service {
-    list<B> GetList(1: A a)
-    A Get(1: B b)
+service TestServiceA {
+    list<TestEnum> GetList(1: TestStruct structArg)
+    TestStruct Get(1: TestEnum enumArg)
+}
+
+service TestServiceB {
+    dep.Dep Get(1: TestStruct structArg)
 }
