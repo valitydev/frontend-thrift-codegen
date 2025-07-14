@@ -24,7 +24,7 @@ export interface ConnectOptions {
     path?: string;
     timeout?: number; // ms
 
-    createCallOptions: () => {
-        headers: KeyValue;
+    createCallOptions?: () => {
+        headers?: KeyValue;
     };
 }

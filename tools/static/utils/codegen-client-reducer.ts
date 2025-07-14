@@ -86,12 +86,15 @@ export const codegenClientReducer = <T>(
               port: location.port,
               https: location.protocol === 'https:',
           };
-    const logFn = loggingFn || defaultLogFn;
+    const logFn = logging || loggingFn ? loggingFn || defaultLogFn : () => {};
     return (acc: T, { name, args, type }: Method) => ({
         ...acc,
         [name]: async (...objectArgs: object[]): Promise<T> => {
-            const headers = clientOptions.createCallOptions
-                ? { ...mainHeaders, ...clientOptions.createCallOptions().headers }
+            const callOptions = clientOptions.createCallOptions
+                ? clientOptions.createCallOptions()
+                : {};
+            const headers = callOptions
+                ? { ...mainHeaders, ...(callOptions.headers || {}) }
                 : mainHeaders;
             const mainLogData = {
                 namespace,
@@ -148,9 +151,7 @@ export const codegenClientReducer = <T>(
                             type,
                             thriftResponse,
                         );
-                        if (logging || loggingFn) {
-                            logFn({ ...mainLogData, response, type: 'success' });
-                        }
+                        logFn({ ...mainLogData, response, type: 'success' });
                         resolve(response);
                     } catch (ex) {
                         reject(ex);
@@ -159,9 +160,7 @@ export const codegenClientReducer = <T>(
             try {
                 return await thriftMethod();
             } catch (error: any) {
-                if (logging || loggingFn) {
-                    logFn({ ...mainLogData, error, type: 'error' });
-                }
+                logFn({ ...mainLogData, error, type: 'error' });
                 throw error;
             }
         },
