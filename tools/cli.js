@@ -68,6 +68,14 @@ async function codegenClient() {
             options.alias = {
                 thrift: path.resolve(__dirname, 'thrift/gen.js'),
             };
+            options.define = {
+                ...options.define,
+                global: 'globalThis',
+            };
+            options.inject = [
+                ...(options.inject || []),
+                path.resolve(__dirname, 'buffer-polyfill.js'),
+            ];
         },
     });
 }
