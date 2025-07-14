@@ -55,7 +55,7 @@ export class __serviceName__ {
     constructor(connectOptions$: Observable<ConnectOptions>) {
         this.client$ = connectOptions$.pipe(
             switchMap((params) => __exportName__(params)),
-            shareReplay({refCount: true, bufferSize: 1}),
+            shareReplay(1),
         );
     }
 
