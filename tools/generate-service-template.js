@@ -45,7 +45,7 @@ const generateServiceTemplate = async (config, typeExportNamespaces, outputPath,
                                         .join('\n') +
                                     '\n*/\n' +
                                     `${fun.name}(...params: Parameters<${exportName}CodegenClient['${fun.name}']>) {` +
-                                    ` return this.client$.pipe(switchMap((c) => c.${fun.name}(...params))); ` +
+                                    `   return this.client$.pipe(first(), switchMap((c) => c.${fun.name}(...params))); ` +
                                     `}`,
                             )
                             .join('\n\n'),

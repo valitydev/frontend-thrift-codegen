@@ -2,7 +2,7 @@ import { ArgOrExecption, Method } from '@vality/thrift-ts';
 import connectClient from '@vality/woody';
 
 import { createThriftInstance } from './create-thrift-instance';
-import { KeyValue, LogFn, ThriftAstMetadata, ThriftService } from './types';
+import { ConnectOptions, LogFn, ThriftAstMetadata, ThriftService } from './types';
 import { callThriftService } from './call-thrift-service';
 import { thriftInstanceToObject } from './thrift-instance-to-object';
 
@@ -13,7 +13,6 @@ export interface ConnectionContext {
     service: ThriftService;
     hostname?: string;
     port?: string;
-    headers?: KeyValue;
     https?: boolean;
 }
 
@@ -67,11 +66,15 @@ const defaultLogFn: LogFn = ({
 };
 
 export const codegenClientReducer = <T>(
-    { path, service, headers, hostname, port, https }: ConnectionContext,
+    clientOptions: ConnectOptions,
+    // TODO: remove other options
+    { path, service, hostname, port, https }: ConnectionContext,
     meta: ThriftAstMetadata[],
     { serviceName, namespace, logging, loggingFn, i64SafeRangeCheck, timeout }: ClientSettings,
     context: ThriftContext,
 ) => {
+    const mainHeaders = clientOptions.headers || {};
+
     const endpoint = hostname
         ? {
               hostname,
@@ -87,6 +90,10 @@ export const codegenClientReducer = <T>(
     return (acc: T, { name, args, type }: Method) => ({
         ...acc,
         [name]: async (...objectArgs: object[]): Promise<T> => {
+            const headers = clientOptions.createCallOptions
+                ? { ...mainHeaders, ...clientOptions.createCallOptions().headers }
+                : mainHeaders;
+
             const thriftMethod = (): Promise<T> =>
                 new Promise(async (resolve, reject) => {
                     try {
