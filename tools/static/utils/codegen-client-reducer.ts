@@ -93,6 +93,13 @@ export const codegenClientReducer = <T>(
             const headers = clientOptions.createCallOptions
                 ? { ...mainHeaders, ...clientOptions.createCallOptions().headers }
                 : mainHeaders;
+            const mainLogData = {
+                namespace,
+                serviceName,
+                name,
+                args: objectArgs,
+                headers,
+            };
 
             const thriftMethod = (): Promise<T> =>
                 new Promise(async (resolve, reject) => {
@@ -122,14 +129,7 @@ export const codegenClientReducer = <T>(
                                 reject(err);
                             },
                         ) as any;
-                        logFn({
-                            namespace,
-                            serviceName,
-                            name,
-                            args: objectArgs,
-                            headers,
-                            type: 'call',
-                        });
+                        logFn({ ...mainLogData, type: 'call' });
                         const thriftResponse = await callThriftService(
                             {
                                 namespace,
@@ -149,15 +149,7 @@ export const codegenClientReducer = <T>(
                             thriftResponse,
                         );
                         if (logging || loggingFn) {
-                            logFn({
-                                namespace,
-                                serviceName,
-                                name,
-                                args: objectArgs,
-                                response,
-                                headers,
-                                type: 'success',
-                            });
+                            logFn({ ...mainLogData, response, type: 'success' });
                         }
                         resolve(response);
                     } catch (ex) {
@@ -168,15 +160,7 @@ export const codegenClientReducer = <T>(
                 return await thriftMethod();
             } catch (error: any) {
                 if (logging || loggingFn) {
-                    logFn({
-                        namespace,
-                        serviceName,
-                        name,
-                        args: objectArgs,
-                        error,
-                        headers,
-                        type: 'error',
-                    });
+                    logFn({ ...mainLogData, error, type: 'error' });
                 }
                 throw error;
             }
