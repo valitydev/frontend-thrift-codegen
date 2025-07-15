@@ -2,7 +2,7 @@ import { ArgOrExecption, Method } from '@vality/thrift-ts';
 import connectClient from '@vality/woody';
 
 import { createThriftInstance } from './create-thrift-instance';
-import { KeyValue, LogFn, ThriftAstMetadata, ThriftService } from './types';
+import { ConnectOptions, LogFn, ThriftAstMetadata, ThriftService } from './types';
 import { callThriftService } from './call-thrift-service';
 import { thriftInstanceToObject } from './thrift-instance-to-object';
 
@@ -13,7 +13,6 @@ export interface ConnectionContext {
     service: ThriftService;
     hostname?: string;
     port?: string;
-    headers?: KeyValue;
     https?: boolean;
 }
 
@@ -67,11 +66,15 @@ const defaultLogFn: LogFn = ({
 };
 
 export const codegenClientReducer = <T>(
-    { path, service, headers, hostname, port, https }: ConnectionContext,
+    clientOptions: ConnectOptions,
+    // TODO: remove other options
+    { path, service, hostname, port, https }: ConnectionContext,
     meta: ThriftAstMetadata[],
     { serviceName, namespace, logging, loggingFn, i64SafeRangeCheck, timeout }: ClientSettings,
     context: ThriftContext,
 ) => {
+    const mainHeaders = clientOptions.headers || {};
+
     const endpoint = hostname
         ? {
               hostname,
@@ -83,10 +86,24 @@ export const codegenClientReducer = <T>(
               port: location.port,
               https: location.protocol === 'https:',
           };
-    const logFn = loggingFn || defaultLogFn;
+    const logFn = logging || loggingFn ? loggingFn || defaultLogFn : () => {};
     return (acc: T, { name, args, type }: Method) => ({
         ...acc,
         [name]: async (...objectArgs: object[]): Promise<T> => {
+            const callOptions = clientOptions.createCallOptions
+                ? clientOptions.createCallOptions()
+                : {};
+            const headers = callOptions
+                ? { ...mainHeaders, ...(callOptions.headers || {}) }
+                : mainHeaders;
+            const mainLogData = {
+                namespace,
+                serviceName,
+                name,
+                args: objectArgs,
+                headers,
+            };
+
             const thriftMethod = (): Promise<T> =>
                 new Promise(async (resolve, reject) => {
                     try {
@@ -115,14 +132,7 @@ export const codegenClientReducer = <T>(
                                 reject(err);
                             },
                         ) as any;
-                        logFn({
-                            namespace,
-                            serviceName,
-                            name,
-                            args: objectArgs,
-                            headers,
-                            type: 'call',
-                        });
+                        logFn({ ...mainLogData, type: 'call' });
                         const thriftResponse = await callThriftService(
                             {
                                 namespace,
@@ -141,17 +151,7 @@ export const codegenClientReducer = <T>(
                             type,
                             thriftResponse,
                         );
-                        if (logging || loggingFn) {
-                            logFn({
-                                namespace,
-                                serviceName,
-                                name,
-                                args: objectArgs,
-                                response,
-                                headers,
-                                type: 'success',
-                            });
-                        }
+                        logFn({ ...mainLogData, response, type: 'success' });
                         resolve(response);
                     } catch (ex) {
                         reject(ex);
@@ -160,17 +160,7 @@ export const codegenClientReducer = <T>(
             try {
                 return await thriftMethod();
             } catch (error: any) {
-                if (logging || loggingFn) {
-                    logFn({
-                        namespace,
-                        serviceName,
-                        name,
-                        args: objectArgs,
-                        error,
-                        headers,
-                        type: 'error',
-                    });
-                }
+                logFn({ ...mainLogData, error, type: 'error' });
                 throw error;
             }
         },

@@ -1,4 +1,4 @@
-import { Observable, shareReplay, switchMap, firstValueFrom } from 'rxjs';
+import { Observable, shareReplay, switchMap, firstValueFrom, first } from 'rxjs';
 
 import { metadata$ } from './metadata';
 
@@ -21,7 +21,6 @@ export const __exportName__ = async (
     const connectionContext = {
         path: options.path ?? '/',
         service,
-        headers: options.headers,
         hostname: options.hostname,
         port: options.port,
         https: options.https,
@@ -36,6 +35,7 @@ export const __exportName__ = async (
     };
     return methodsMeta.reduce(
         codegenClientReducer<__exportName__CodegenClient>(
+            options,
             connectionContext,
             metadata,
             clientSettings,
@@ -55,7 +55,7 @@ export class __serviceName__ {
     constructor(connectOptions$: Observable<ConnectOptions>) {
         this.client$ = connectOptions$.pipe(
             switchMap((params) => __exportName__(params)),
-            shareReplay({refCount: true, bufferSize: 1}),
+            shareReplay(1),
         );
     }
 

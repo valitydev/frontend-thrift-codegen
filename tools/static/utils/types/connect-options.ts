@@ -23,4 +23,8 @@ export interface ConnectOptions {
     https?: boolean;
     path?: string;
     timeout?: number; // ms
+
+    createCallOptions?: () => {
+        headers?: KeyValue;
+    };
 }

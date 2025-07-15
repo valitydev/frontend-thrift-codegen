@@ -1,6 +1,6 @@
 {
   "name": "@vality/thrift-codegen",
-  "version": "3.1.0",
+  "version": "3.2.0",
   "description": "",
   "scripts": {
     "prettier:check": "prettier \"**\" --list-different --ignore-unknown",
